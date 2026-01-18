@@ -17,6 +17,10 @@ public class Kurs {
             throw new IllegalArgumentException("Semester muss > 0 sein");
         }
 
+        if(titel == null || titel.trim().isEmpty()) {
+            throw new IllegalArgumentException("Titel darf weder null noch leer sein");
+        }
+
         this.kursId = kursId;
         this.titel = titel;
         this.beschreibung = beschreibung;
@@ -38,6 +42,7 @@ public class Kurs {
     public int getSemester() {
         return semester;
     }
+
 
     public void setTitel(String titel) {
         this.titel = titel;
