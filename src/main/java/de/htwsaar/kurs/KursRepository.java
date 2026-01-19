@@ -10,11 +10,11 @@ public interface KursRepository {
 
     void loescheKursNachId(int kursId);
 
-    void loescheKursNachTitel(String titel);
+    void loescheKurseNachTitel(String titel);
 
     Optional<Kurs> findeKursNachId(int kursId);
 
-    Optional<Kurs> findeKursNachTitel(String titel);
+    List<Kurs> findeAlleKurseNachTitel(String titel);
 
 
 }
