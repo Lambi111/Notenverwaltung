@@ -3,15 +3,12 @@ package de.htwsaar.kurs;
 import java.util.*;
 
 public class Kurs {
-    private final int kursId;
+    private int kursId;
     private String titel;
     private String beschreibung;
     private final int semester;
 
     public Kurs(int kursId, String titel, String beschreibung, int semester) {
-        if(kursId <= 0) {
-            throw new IllegalArgumentException("KursId muss > 0 sein");
-        }
 
         if(semester <= 0) {
             throw new IllegalArgumentException("Semester muss > 0 sein");
@@ -43,6 +40,9 @@ public class Kurs {
         return semester;
     }
 
+    public void setKursId(int kursId) {
+        this.kursId = kursId;
+    }
 
     public void setTitel(String titel) {
         this.titel = titel;
@@ -51,6 +51,7 @@ public class Kurs {
     public void setBeschreibung(String beschreibung) {
         this.beschreibung = beschreibung;
     }
+
 
     @Override
     public String toString() {

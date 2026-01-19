@@ -8,13 +8,6 @@ import org.junit.jupiter.api.Test;
 public class KursTest {
 
     @Test
-    void kursIdKleiner0() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Kurs(-1, "Mathe 1", "Klausur", 1);
-        });
-    }
-
-    @Test
     void titleNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             new Kurs(1, null, "Klausur", 1);
