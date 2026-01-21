@@ -17,5 +17,10 @@ public interface KursRepository {
 
     List<Kurs> findeAlleKurseNachTitel(String titel);
 
+    void loescheAlleKurse();
+
+    void aendereBeschreibungNachId(int kursId, String neueBeschreibung);
+
+    void aendereBeschreibungNachTitel(String titel, String neueBeschreibung);
 
 }

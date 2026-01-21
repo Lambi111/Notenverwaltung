@@ -42,6 +42,7 @@ public class DatenbankKursRepositoryTest {
         repo.speichere(k3);
 
         assertEquals(k1.getKursId(), k3.getKursId()); // ID 1 wiederverwendet
+        repo.loescheAlleKurse();
     }
 
     @Test
@@ -60,14 +61,7 @@ public class DatenbankKursRepositoryTest {
         assertTrue(gefunden.isEmpty());
     }
 
-    /*@Test
-    void speichereKursIdVergeben() {
-        Kurs prog3 = new Kurs(0,"Programmierung 3", "",3);
 
-        Kurs gespeichert = repo.speichere(prog3);
-
-        assertEquals(1,gespeichert.getKursId());
-    }*/
     @Test
     void speichereKurs() {
         Kurs prog3 = new Kurs("Programmierung 3", "",3);

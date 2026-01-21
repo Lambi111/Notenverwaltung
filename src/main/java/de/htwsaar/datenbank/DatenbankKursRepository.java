@@ -10,7 +10,6 @@ import org.jooq.impl.SQLDataType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//import static de.htwsaar.datenbank.Tabelle.*;
 
 public class DatenbankKursRepository implements KursRepository {
 
@@ -30,18 +29,8 @@ public class DatenbankKursRepository implements KursRepository {
     }
 
 
-    /*@Override
-    public Kurs speichere(Kurs kurs) {
-        if(kurs.getKursId() == 0) {
-            kurs.setKursId(nextKursId++);
-        }
-        speicher.put(kurs.getKursId(), kurs);
-        return kurs;
-    }*/
     @Override
     public void speichere(Kurs kurs) {
-            //kurs.setKursId(Kurs.generiereNeueId());
-            //kurs.setKursId(nextKursId++);
         if(kurs.getKursId() == 0) {
             int neueId;
             if(!freieIds.isEmpty()) {
@@ -61,13 +50,9 @@ public class DatenbankKursRepository implements KursRepository {
                 .set(Tabelle.BESCHREIBUNG, kurs.getBeschreibung())
                 .set(Tabelle.SEMESTER, kurs.getSemester())
                 .execute();
-        //speicher.put(kurs.getKursId(), kurs);
+
     }
 
-    /*@Override
-    public List<Kurs> zeigeAlleKurse() {
-        return speicher.values().stream().collect(Collectors.toList());
-    }*/
     @Override
     public List<Kurs> zeigeAlleKurse() {
         List<Record4<Integer,String, String, Integer>> records = dsl.select(Tabelle.KURSID,Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
@@ -79,22 +64,15 @@ public class DatenbankKursRepository implements KursRepository {
                 .collect(Collectors.toList());
     }
 
-    /*@Override
-    public void loescheKursNachId(int kursId) {
-        speicher.remove(kursId);
-    }*/
-
     public void loescheKursNachId(int kursId) {
         dsl.deleteFrom(Tabelle.KURS)
                 .where(Tabelle.KURSID.eq(kursId))
                 .execute();
-        //Kurs.entferneId(kursId);
         freieIds.add(kursId);
     }
 
     @Override
     public void loescheKurseNachTitel(String titel) {
-        //speicher.values().removeIf(k -> k.getTitel().equals(titel));
         dsl.deleteFrom(Tabelle.KURS)
                 .where(Tabelle.TITEL.eq(titel))
                 .execute();
@@ -102,7 +80,6 @@ public class DatenbankKursRepository implements KursRepository {
 
     @Override
     public Optional<Kurs> findeKursNachId(int kursId) {
-        //return Optional.ofNullable(speicher.get(kursId));
         Record4<Integer, String, String, Integer> record = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
                 .from(Tabelle.KURS)
                 .where(Tabelle.KURSID.eq(kursId))
@@ -114,9 +91,6 @@ public class DatenbankKursRepository implements KursRepository {
 
     @Override
     public List<Kurs> findeAlleKurseNachTitel(String titel) {
-        /*return speicher.values().stream()
-                .filter(kurs -> kurs.getTitel().equals(titel))
-                .collect(Collectors.toList());*/
         List<Record4<Integer, String, String, Integer>> records = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
                 .from(Tabelle.KURS)
                 .where(Tabelle.TITEL.eq(titel))
@@ -131,10 +105,6 @@ public class DatenbankKursRepository implements KursRepository {
     private Kurs recordZuKurs(Record4<Integer, String, String, Integer> record) {
         Kurs kurs = new Kurs(record.get(Tabelle.TITEL),record.get(Tabelle.BESCHREIBUNG),record.get(Tabelle.SEMESTER));
         kurs.setKursId(record.get(Tabelle.KURSID));
-        /*kurs.setKursId(record.get(KURSID));
-        kurs.setTitel(record.get(TITEL));
-        kurs.setBeschreibung(record.get(BESCHREIBUNG));
-        kurs.setSemester(record.get(SEMESTER));*/
         return kurs;
     }
 
@@ -142,5 +112,18 @@ public class DatenbankKursRepository implements KursRepository {
         dsl.deleteFrom(Tabelle.KURS).execute();
     }
 
+    //ab hier neu
+    public void aendereBeschreibungNachId(int kursId, String neueBeschreibung) {
+        dsl.update(Tabelle.KURS)
+                .set(Tabelle.BESCHREIBUNG, neueBeschreibung)
+                .where(Tabelle.KURSID.eq(kursId))
+                .execute();
+    }
 
+    public void aendereBeschreibungNachTitel(String titel, String neueBeschreibung) {
+        dsl.update(Tabelle.KURS)
+                .set(Tabelle.BESCHREIBUNG, neueBeschreibung)
+                .where(Tabelle.TITEL.eq(titel))
+                .execute();
+    }
 }

@@ -7,15 +7,6 @@ import org.junit.jupiter.api.Test;
 
 public class KursTest {
 
-    /*@Test
-    void automatischeKursIdVergabe_VonEinsAufsteigend() {
-        //Kurs.resetIds();
-
-        Kurs prog3 = new Kurs("Programmierung", "-", 3);
-
-        assertEquals(1, prog3.getKursId());
-    }*/
-
     @Test
     void titleNull() {
         assertThrows(IllegalArgumentException.class, () -> {

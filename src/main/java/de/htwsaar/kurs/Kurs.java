@@ -3,7 +3,6 @@ package de.htwsaar.kurs;
 import java.util.*;
 
 public class Kurs {
-    //private static final TreeSet<Integer> vergebeneIds = new TreeSet<>();
     private int kursId;
     private String titel;
     private String beschreibung;
@@ -18,25 +17,10 @@ public class Kurs {
             throw new IllegalArgumentException("Titel darf weder null noch leer sein");
         }
         this.kursId = 0;
-        //this.kursId = generiereNeueId();
         this.titel = titel;
         this.beschreibung = beschreibung;
         this.semester = semester;
     }
-
-    /*public static int generiereNeueId() {
-        int id = 1;
-        for(int vergebeneId : vergebeneIds) {
-            if(id < vergebeneId) break;
-            id++;
-        }
-        vergebeneIds.add(id);
-        return id;
-    }
-
-    public static void entferneId(int id) {
-        vergebeneIds.remove(id);
-    }*/
 
     public int getKursId() {
         return kursId;
@@ -89,10 +73,5 @@ public class Kurs {
     public int hashCode() {
         return kursId == 0 ? System.identityHashCode(this) : Objects.hash(kursId);
     }
-
-    //Hilfsklasse für Test(automatischeKursIdVergabe)
-    /*public static void resetIds() {
-        vergebeneIds.clear();
-    }*/
 
 }
