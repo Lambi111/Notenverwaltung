@@ -3,25 +3,39 @@ package de.htwsaar.kurs;
 import java.util.*;
 
 public class Kurs {
+    private static final TreeSet<Integer> vergebeneIds = new TreeSet<>();
     private int kursId;
     private String titel;
     private String beschreibung;
-    private final int semester;
+    private int semester;
 
-    public Kurs(int kursId, String titel, String beschreibung, int semester) {
-
+    public Kurs(String titel, String beschreibung, int semester) {
         if(semester <= 0) {
-            throw new IllegalArgumentException("Semester muss > 0 sein");
+            throw new IllegalArgumentException("Semester kann nicht 0 oder negativ sein!");
         }
 
         if(titel == null || titel.trim().isEmpty()) {
             throw new IllegalArgumentException("Titel darf weder null noch leer sein");
         }
-
-        this.kursId = kursId;
+        //this.kursId = 0;
+        this.kursId = generiereNeueId();
         this.titel = titel;
         this.beschreibung = beschreibung;
         this.semester = semester;
+    }
+
+    public static int generiereNeueId() {
+        int id = 1;
+        for(int vergebeneId : vergebeneIds) {
+            if(id < vergebeneId) break;
+            id++;
+        }
+        vergebeneIds.add(id);
+        return id;
+    }
+
+    public static void entferneId(int id) {
+        vergebeneIds.remove(id);
     }
 
     public int getKursId() {
@@ -52,10 +66,13 @@ public class Kurs {
         this.beschreibung = beschreibung;
     }
 
+    public void setSemester(int semester) {
+        this.semester = semester;
+    }
 
     @Override
     public String toString() {
-        return  "Kurs: " + titel + " (" + kursId + ")" + "\n" +
+        return  "KursId: " + kursId + ", Kurs: " + titel + "\n" +
                 "Semester: " + semester + "\n" +
                 "Beschreibung: " + beschreibung;
     }
@@ -71,6 +88,11 @@ public class Kurs {
     @Override
     public int hashCode() {
         return Objects.hash(kursId);
+    }
+
+    //Hilfsklasse für Test(automatischeKursIdVergabe)
+    public static void resetIds() {
+        vergebeneIds.clear();
     }
 
 }

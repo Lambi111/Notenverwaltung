@@ -8,30 +8,39 @@ import org.junit.jupiter.api.Test;
 public class KursTest {
 
     @Test
+    void automatischeKursIdVergabe_VonEinsAufsteigend() {
+        Kurs.resetIds();
+
+        Kurs prog3 = new Kurs("Programmierung", "-", 3);
+
+        assertEquals(1, prog3.getKursId());
+    }
+
+    @Test
     void titleNull() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Kurs(1, null, "Klausur", 1);
+            new Kurs( null, "Klausur", 1);
         });
     }
 
     @Test
     void titleEmpty() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Kurs(1, "", "Klausur", 1);
+            new Kurs("", "Klausur", 1);
         });
     }
 
     @Test
     void semesterKleiner0() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Kurs(1, "Mathe 1", "Klausur", -1);
+            new Kurs( "Mathe 1", "Klausur", -1);
         });
     }
 
     @Test
     void testToString() {
-        Kurs mathe = new Kurs(1, "Mathe 1", "Klausur", 1);
-        String expected = "Kurs: " + mathe.getTitel() + " (" + mathe.getKursId() + ")" + "\n" +
+        Kurs mathe = new Kurs( "Mathe 1", "Klausur", 1);
+        String expected = "KursId: " + mathe.getKursId() + ", Kurs: " + mathe.getTitel() + "\n" +
                 "Semester: " + mathe.getSemester() + "\n" +
                 "Beschreibung: " + mathe.getBeschreibung();
         assertEquals(expected, mathe.toString());
@@ -39,16 +48,16 @@ public class KursTest {
 
     @Test
     void testEqualsNachKursId() {
-        Kurs k1 = new Kurs(1, "Mathe 1", "Klausur", 1);
-        Kurs k2 = new Kurs(1, "Mathe 1", "Klausur", 1);
-        assertTrue(k1.equals(k2));
+        Kurs k1 = new Kurs( "Mathe 1", "Klausur", 1);
+        Kurs k2 = new Kurs( "Mathe 1", "Klausur", 1);
+        assertFalse(k1.equals(k2));
     }
 
     @Test
     void testHashCodeNachKursId() {
-        Kurs k1 = new Kurs(1, "Mathe 1", "Klausur", 1);
-        Kurs k2 = new Kurs(1, "Mathe 1", "Klausur", 1);
-        assertEquals(k1.hashCode(), k2.hashCode());
+        Kurs k1 = new Kurs( "Mathe 1", "Klausur", 1);
+        Kurs k2 = new Kurs( "Mathe 1", "Klausur", 1);
+        assertNotEquals(k1.hashCode(), k2.hashCode());
     }
 
 }
