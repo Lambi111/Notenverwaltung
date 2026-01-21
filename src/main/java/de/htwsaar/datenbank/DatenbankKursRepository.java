@@ -2,21 +2,25 @@ package de.htwsaar.datenbank;
 
 import de.htwsaar.kurs.Kurs;
 import de.htwsaar.kurs.KursRepository;
-import org.jooq.DSLContext;
+import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.Record4;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.htwsaar.datenbank.Tabelle.*;
+//import static de.htwsaar.datenbank.Tabelle.*;
 
 public class DatenbankKursRepository implements KursRepository {
 
-    //private final Map<Integer,Kurs> speicher = new HashMap<>();
-    //private final Set<Integer> verwendeteIds = new HashSet<>();
-    //private int nextKursId = 1;
+    public static class Tabelle {
+        public static final Table<Record> KURS = DSL.table("Kurs");
+        public static final Field<Integer> KURSID = DSL.field("kursID", SQLDataType.INTEGER);
+        public static final Field<String> TITEL = DSL.field("titel", SQLDataType.VARCHAR);
+        public static final Field<String> BESCHREIBUNG = DSL.field("beschreibung", SQLDataType.VARCHAR);
+        public static final Field<Integer> SEMESTER = DSL.field("semester", SQLDataType.INTEGER);
+    }
 
     private final DSLContext dsl;
     private final PriorityQueue<Integer> freieIds = new PriorityQueue<>();
@@ -66,8 +70,8 @@ public class DatenbankKursRepository implements KursRepository {
     }*/
     @Override
     public List<Kurs> zeigeAlleKurse() {
-        List<Record4<Integer,String, String, Integer>> records = dsl.select(KURSID,TITEL, BESCHREIBUNG, SEMESTER)
-                .from(KURS)
+        List<Record4<Integer,String, String, Integer>> records = dsl.select(Tabelle.KURSID,Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+                .from(Tabelle.KURS)
                 .fetch();
 
         return records.stream()
@@ -81,8 +85,8 @@ public class DatenbankKursRepository implements KursRepository {
     }*/
 
     public void loescheKursNachId(int kursId) {
-        dsl.deleteFrom(KURS)
-                .where(KURSID.eq(kursId))
+        dsl.deleteFrom(Tabelle.KURS)
+                .where(Tabelle.KURSID.eq(kursId))
                 .execute();
         //Kurs.entferneId(kursId);
         freieIds.add(kursId);
@@ -91,17 +95,17 @@ public class DatenbankKursRepository implements KursRepository {
     @Override
     public void loescheKurseNachTitel(String titel) {
         //speicher.values().removeIf(k -> k.getTitel().equals(titel));
-        dsl.deleteFrom(KURS)
-                .where(TITEL.eq(titel))
+        dsl.deleteFrom(Tabelle.KURS)
+                .where(Tabelle.TITEL.eq(titel))
                 .execute();
     }
 
     @Override
     public Optional<Kurs> findeKursNachId(int kursId) {
         //return Optional.ofNullable(speicher.get(kursId));
-        Record4<Integer, String, String, Integer> record = dsl.select(KURSID, TITEL, BESCHREIBUNG, SEMESTER)
-                .from(KURS)
-                .where(KURSID.eq(kursId))
+        Record4<Integer, String, String, Integer> record = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+                .from(Tabelle.KURS)
+                .where(Tabelle.KURSID.eq(kursId))
                 .fetchOne();
 
         if(record == null) return Optional.empty();
@@ -113,9 +117,9 @@ public class DatenbankKursRepository implements KursRepository {
         /*return speicher.values().stream()
                 .filter(kurs -> kurs.getTitel().equals(titel))
                 .collect(Collectors.toList());*/
-        List<Record4<Integer, String, String, Integer>> records = dsl.select(KURSID, TITEL, BESCHREIBUNG, SEMESTER)
-                .from(KURS)
-                .where(TITEL.eq(titel))
+        List<Record4<Integer, String, String, Integer>> records = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+                .from(Tabelle.KURS)
+                .where(Tabelle.TITEL.eq(titel))
                 .fetch();
 
         return records.stream()
@@ -125,8 +129,8 @@ public class DatenbankKursRepository implements KursRepository {
 
     // Hilfsmethode: Record -> Kurs
     private Kurs recordZuKurs(Record4<Integer, String, String, Integer> record) {
-        Kurs kurs = new Kurs(record.get(TITEL),record.get(BESCHREIBUNG),record.get(SEMESTER));
-        kurs.setKursId(record.get(KURSID));
+        Kurs kurs = new Kurs(record.get(Tabelle.TITEL),record.get(Tabelle.BESCHREIBUNG),record.get(Tabelle.SEMESTER));
+        kurs.setKursId(record.get(Tabelle.KURSID));
         /*kurs.setKursId(record.get(KURSID));
         kurs.setTitel(record.get(TITEL));
         kurs.setBeschreibung(record.get(BESCHREIBUNG));

@@ -52,5 +52,7 @@ buildNumber.properties
 
 database/notenverwaltung.db
 
+/notenverwaltung.db
+
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,java
