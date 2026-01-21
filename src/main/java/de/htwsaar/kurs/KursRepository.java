@@ -4,7 +4,8 @@ import java.util.*;
 
 public interface KursRepository {
 
-    Kurs speichere(Kurs kurs);
+
+    void speichere(Kurs kurs);
 
     List<Kurs> zeigeAlleKurse();
 
