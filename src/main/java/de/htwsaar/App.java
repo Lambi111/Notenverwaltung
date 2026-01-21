@@ -1,24 +1,27 @@
-package de.htwsaar;
-
-import de.htwsaar.kurs.DatabaseConnection;
-
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Hello world!
- */
-//public class App {
-//    public static void main(String[] args) {
-//        System.out.println("Hello World!");
-//    }
-//}
+import de.htwsaar.kurs.*;
+        import de.htwsaar.datenbank.DatenbankKursRepository;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+
 
 public class App {
     public static void main(String[] args) throws SQLException {
-        try (Connection conn = DatabaseConnection.connect()) {
-            System.out.println("Verbindung erfolgreich!");
-        }
+
+        Connection conn = DriverManager.getConnection("jdbc:sqlite:database/notenverwaltung.db", "sa", "");
+        DSLContext dsl = DSL.using(conn, SQLDialect.SQLITE);
+
+        KursRepository kursRepo = new DatenbankKursRepository(dsl);
+
+        KursService kursService = new KursService(kursRepo);
+
+        KursCLI kursCli = new KursCLI(kursService);
+
+        kursCli.start();
+
     }
 }
-
