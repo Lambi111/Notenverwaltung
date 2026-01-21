@@ -3,7 +3,7 @@ package de.htwsaar.kurs;
 import java.util.*;
 
 public class Kurs {
-    private static final TreeSet<Integer> vergebeneIds = new TreeSet<>();
+    //private static final TreeSet<Integer> vergebeneIds = new TreeSet<>();
     private int kursId;
     private String titel;
     private String beschreibung;
@@ -17,14 +17,14 @@ public class Kurs {
         if(titel == null || titel.trim().isEmpty()) {
             throw new IllegalArgumentException("Titel darf weder null noch leer sein");
         }
-        //this.kursId = 0;
-        this.kursId = generiereNeueId();
+        this.kursId = 0;
+        //this.kursId = generiereNeueId();
         this.titel = titel;
         this.beschreibung = beschreibung;
         this.semester = semester;
     }
 
-    public static int generiereNeueId() {
+    /*public static int generiereNeueId() {
         int id = 1;
         for(int vergebeneId : vergebeneIds) {
             if(id < vergebeneId) break;
@@ -36,7 +36,7 @@ public class Kurs {
 
     public static void entferneId(int id) {
         vergebeneIds.remove(id);
-    }
+    }*/
 
     public int getKursId() {
         return kursId;
@@ -82,17 +82,17 @@ public class Kurs {
         if (this == o) return true;
         if(!(o instanceof Kurs)) return false;
         Kurs kurs = (Kurs)o;
-        return kursId == kurs.kursId;
+        return kursId == kurs.kursId && kursId != 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(kursId);
+        return kursId == 0 ? System.identityHashCode(this) : Objects.hash(kursId);
     }
 
     //Hilfsklasse für Test(automatischeKursIdVergabe)
-    public static void resetIds() {
+    /*public static void resetIds() {
         vergebeneIds.clear();
-    }
+    }*/
 
 }
