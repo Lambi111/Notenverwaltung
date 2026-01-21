@@ -4,7 +4,8 @@ import java.util.*;
 
 public interface KursRepository {
 
-    Kurs speichere(Kurs kurs);
+
+    void speichere(Kurs kurs);
 
     List<Kurs> zeigeAlleKurse();
 
@@ -16,5 +17,10 @@ public interface KursRepository {
 
     List<Kurs> findeAlleKurseNachTitel(String titel);
 
+    void loescheAlleKurse();
+
+    void aendereBeschreibungNachId(int kursId, String neueBeschreibung);
+
+    void aendereBeschreibungNachTitel(String titel, String neueBeschreibung);
 
 }
