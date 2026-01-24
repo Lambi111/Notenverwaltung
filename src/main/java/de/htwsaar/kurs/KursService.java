@@ -25,24 +25,51 @@ public class KursService {
         return kursRepository.zeigeAlleKurse();
     }
 
-    //ab hier neu
     public void loescheKurseNachTitel(String titel) {
+        List<Kurs> kurse = kursRepository.findeAlleKurseNachTitel(titel);
+
+        if(kurse.isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit " + titel + " existiert nicht");
+        }
+
         kursRepository.loescheKurseNachTitel(titel);
     }
 
     public void aendereBeschreibungNachId(int kursId,String beschreibung) {
+        if(kursRepository.findeKursNachId(kursId).isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit " + kursId + " existiert nicht");
+        }
+
         kursRepository.aendereBeschreibungNachId(kursId, beschreibung);
     }
 
     public void aendereBeschreibungNachTitel(String titel, String beschreibung) {
+        List<Kurs> kurse = kursRepository.findeAlleKurseNachTitel(titel);
+
+        if(kurse.isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit " + titel + " existiert nicht");
+        }
+
         kursRepository.aendereBeschreibungNachTitel(titel, beschreibung);
     }
 
-    public Optional<Kurs> findeKursNachId(int kursId) {
-        return kursRepository.findeKursNachId(kursId);
+    public Kurs findeKursNachId(int kursId) {
+        Optional<Kurs> kursOpt = kursRepository.findeKursNachId(kursId);
+
+        if(kursOpt.isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit " + kursId + " existiert nicht");
+        }
+
+        return kursOpt.get();
     }
 
     public List<Kurs> findeKursNachTitel(String titel) {
-        return kursRepository.findeAlleKurseNachTitel(titel);
+        List<Kurs> kurse = kursRepository.findeAlleKurseNachTitel(titel);
+
+        if(kurse.isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit " + titel + " existiert nicht");
+        }
+
+        return kurse;
     }
 }

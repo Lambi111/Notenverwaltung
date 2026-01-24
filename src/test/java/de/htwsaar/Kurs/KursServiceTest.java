@@ -2,7 +2,6 @@ package de.htwsaar.Kurs;
 
 import de.htwsaar.datenbank.DatenbankKursRepository;
 import de.htwsaar.kurs.Kurs;
-import de.htwsaar.kurs.KursRepository;
 import de.htwsaar.kurs.KursService;
 
 import java.sql.Connection;
@@ -20,8 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class KursServiceTest {
-    //private Connection connection;
-    //private DSLContext dsl;
     private KursService kursService;
     private DatenbankKursRepository repo;
 
@@ -77,6 +74,16 @@ public class KursServiceTest {
     }
 
     @Test
+    void loescheKeineKurseNachUngueltigenTitel() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> kursService.loescheKurseNachTitel("Physik")
+        );
+
+        assertEquals("Kurs mit Physik existiert nicht",ex.getMessage());
+    }
+
+    @Test
     void ausgabeAllerGespeichertenKurse() {
         kursService.erstelleKurs("Prog 1", "Klausur", 1);
         kursService.erstelleKurs("Prog 2", "Klausur", 2);
@@ -92,15 +99,21 @@ public class KursServiceTest {
         kursService.erstelleKurs("Prog 3", "-", 3);
         Kurs kurs = repo.zeigeAlleKurse().get(0);
 
-        Optional<Kurs> gefunden = kursService.findeKursNachId(kurs.getKursId());
+        Optional<Kurs> gefunden = Optional.ofNullable(kursService.findeKursNachId(kurs.getKursId()));
 
         assertEquals("Prog 3", gefunden.get().getTitel());
     }
 
     @Test
     void findeKursNachIdMitNichtVorhandenerId() {
-        Optional<Kurs> gefunden = kursService.findeKursNachId(12);
-        assertTrue(gefunden.isEmpty());
+        //Optional<Kurs> gefunden = Optional.ofNullable(kursService.findeKursNachId(12));
+        //assertTrue(gefunden.isEmpty());
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> kursService.findeKursNachId(12)
+        );
+
+        assertEquals("Kurs mit 12 existiert nicht", ex.getMessage());
     }
 
     @Test
@@ -115,7 +128,17 @@ public class KursServiceTest {
     }
 
     @Test
-    void aendereBeschreibungNachTitel() {
+    void findeKursNachTitelMitNichtVorhandenemTitel() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> kursService.findeKursNachTitel("Physik")
+        );
+
+        assertEquals("Kurs mit Physik existiert nicht", ex.getMessage());
+    }
+
+    @Test
+    void aendereBeschreibungNachId() {
         kursService.erstelleKurs("Prog 1", "-", 1);
         Kurs kurs = repo.zeigeAlleKurse().get(0);
 
@@ -123,6 +146,16 @@ public class KursServiceTest {
 
         Kurs aktualisiert = repo.findeKursNachId(kurs.getKursId()).get();
         assertEquals("Klausur", aktualisiert.getBeschreibung());
+    }
+
+    @Test
+    void aendereKeineBeschreibungWegenUngueltigerId() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> kursService.aendereBeschreibungNachId(99, "Neu")
+        );
+
+        assertEquals("Kurs mit 99 existiert nicht", ex.getMessage());
     }
 
     @Test
