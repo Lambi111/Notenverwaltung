@@ -13,7 +13,7 @@ public class KursCLI {
         System.out.println("\nBitte wählen:");
         System.out.println("1) Kurs anlegen");
         System.out.println("2) Alle Kurse anzeigen");
-        System.out.println("3) Kurs nach ID lösschen");
+        System.out.println("3) Kurs nach ID löschen");
         System.out.println("4) Kurse nach Titel löschen");
         System.out.println("5) Kursbeschreibung ändern");
         System.out.println("6) Kurs suchen");
