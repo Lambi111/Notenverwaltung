@@ -19,6 +19,7 @@ public class NoteCLI {
         System.out.println("5) Note ändern");
         System.out.println("6) Note suchen");
         System.out.println("7) Durchschnittsnote eines Studenten berechnen");
+        System.out.println("8) Durchschnittsnote eines Kurses berechnen");
         System.out.println("0) Beenden");
         System.out.println("> ");
     }
@@ -48,6 +49,7 @@ public class NoteCLI {
                         case 5 -> noteAendern(scanner);
                         case 6 -> noteSuchen(scanner);
                         case 7 -> durchschnittBerechnen(scanner);
+                        case 8 -> durchschnittKursBerechnen(scanner);
                         case 0 -> {
                             System.out.println("Programm beendet!");
                             running = false;
@@ -166,6 +168,14 @@ public class NoteCLI {
 
         double durchschnitt = noteService.berechneDurchschnittsnote(matrikelnummer);
         System.out.println("📊 Durchschnittsnote: " + durchschnitt);
+    }
+
+    private void durchschnittKursBerechnen(Scanner scanner) {
+        System.out.println("KursId: ");
+        int kursId = Integer.parseInt(scanner.nextLine());
+
+        double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(kursId);
+        System.out.println("📊 Kurs-Durchschnittsnote: " + durchschnitt);
     }
 
 }

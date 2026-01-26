@@ -174,5 +174,25 @@ public class NoteServiceTest {
         assertEquals("Keine Noten fuer Matrikelnummer 999 gefunden", ex.getMessage());
     }
 
+    @Test
+    void berechneDurchschnittsnoteNachKursId() {
+        noteService.erstelleNote(1, 10, 111);
+        noteService.erstelleNote(2, 10, 222);
+        noteService.erstelleNote(3, 10, 333);
+
+        double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(10);
+
+        assertEquals(2.0, durchschnitt);
+    }
+
+    @Test
+    void berechneDurchschnittsnoteNachKursIdKeineNoten() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> noteService.berechneDurchschnittsnoteNachKursId(99)
+        );
+
+        assertEquals("Keine Noten für KursId 99 gefunden", ex.getMessage());
+    }
 
 }

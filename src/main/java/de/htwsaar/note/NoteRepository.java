@@ -26,4 +26,6 @@ public interface NoteRepository {
 
     double berechneDurchschnittsnoteNachMatrikelnummer(int matrikelnummer);
 
+    double berechneDurchschnittsnoteNachKursId(int kursId);
+
 }

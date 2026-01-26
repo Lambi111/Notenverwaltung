@@ -155,4 +155,16 @@ public class DatenbankNoteRepositoryTest {
         assertEquals(2.0, avg);
     }
 
+    @Test
+    void berechneDurchschnittsnoteNachKursId() {
+        repo.speichere(new Note(1, 10, 111));
+        repo.speichere(new Note(2, 10, 222));
+        repo.speichere(new Note(3, 10, 333));
+
+        double avg = repo.berechneDurchschnittsnoteNachKursId(10);
+
+        assertEquals(2.0, avg);
+    }
+
+
 }

@@ -145,8 +145,17 @@ public class DatenbankNoteRepository implements NoteRepository {
         return avg == null ? 0.0 : avg;
     }
 
+    @Override
+    public double berechneDurchschnittsnoteNachKursId(int kursId) {
+        Double avg = dsl.select(DSL.avg(Tabelle.NOTE_WERT))
+                .from(Tabelle.NOTE)
+                .where(Tabelle.KURSID.eq(kursId))
+                .fetchOne(0, Double.class);
 
-    // Hilfsmethode
+        return avg == null ? 0.0 : avg;
+    }
+
+
     private Note recordZuNote(Record4<Integer, Integer, Integer, Integer> record) {
         Note note = new Note(
                 record.get(Tabelle.NOTE_WERT),
