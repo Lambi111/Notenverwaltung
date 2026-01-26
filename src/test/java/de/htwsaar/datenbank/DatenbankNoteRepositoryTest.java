@@ -143,4 +143,16 @@ public class DatenbankNoteRepositoryTest {
 
         assertTrue(repo.zeigeAlleNoten().isEmpty());
     }
+
+    @Test
+    void berechneDurchschnittsnoteNachMatrikelnummer() {
+        repo.speichere(new Note(1, 10, 111));
+        repo.speichere(new Note(2, 20, 111));
+        repo.speichere(new Note(3, 30, 111));
+
+        double avg = repo.berechneDurchschnittsnoteNachMatrikelnummer(111);
+
+        assertEquals(2.0, avg);
+    }
+
 }
