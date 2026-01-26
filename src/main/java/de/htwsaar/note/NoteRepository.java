@@ -23,4 +23,7 @@ public interface NoteRepository {
     void aendereNoteNachId(int id, int neueNote);
 
     void aendereNoteNachKursIDUndMatrikelnummer(int kursId, int matrikelnummer, int neueNote);
+
+    double berechneDurchschnittsnoteNachMatrikelnummer(int matrikelnummer);
+
 }

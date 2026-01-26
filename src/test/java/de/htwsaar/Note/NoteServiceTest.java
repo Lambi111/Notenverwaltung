@@ -152,4 +152,27 @@ public class NoteServiceTest {
         Note aktualisiert = repo.zeigeAlleNoten().get(0);
         assertEquals(2, aktualisiert.getNote());
     }
+
+    @Test
+    void berechneDurchschnittsnote() {
+        noteService.erstelleNote(1, 10, 111);
+        noteService.erstelleNote(2, 20, 111);
+        noteService.erstelleNote(3, 30, 111);
+
+        double durchschnitt = noteService.berechneDurchschnittsnote(111);
+
+        assertEquals(2.0, durchschnitt);
+    }
+
+    @Test
+    void berechneDurchschnittsnoteKeineNoten() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> noteService.berechneDurchschnittsnote(999)
+        );
+
+        assertEquals("Keine Noten fuer Matrikelnummer 999 gefunden", ex.getMessage());
+    }
+
+
 }

@@ -135,6 +135,17 @@ public class DatenbankNoteRepository implements NoteRepository {
                 .execute();
     }
 
+    @Override
+    public double berechneDurchschnittsnoteNachMatrikelnummer(int matrikelnummer) {
+        Double avg = dsl.select(DSL.avg(Tabelle.NOTE_WERT))
+                .from(Tabelle.NOTE)
+                .where(Tabelle.MATRIKELNUMMER.eq(matrikelnummer))
+                .fetchOne(0, Double.class);
+
+        return avg == null ? 0.0 : avg;
+    }
+
+
     // Hilfsmethode
     private Note recordZuNote(Record4<Integer, Integer, Integer, Integer> record) {
         Note note = new Note(

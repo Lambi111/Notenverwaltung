@@ -96,4 +96,15 @@ public class NoteService {
 
         noteRepository.aendereNoteNachKursIDUndMatrikelnummer(kursId, matrikelnummer, neueNote);
     }
+
+    public double berechneDurchschnittsnote(int matrikelnummer) {
+        List<Note> noten = noteRepository.findeAlleNoteNachMatrikelnummer(matrikelnummer);
+
+        if (noten.isEmpty()) {
+            throw new IllegalArgumentException("Keine Noten fuer Matrikelnummer " + matrikelnummer + " gefunden");
+        }
+
+        return noteRepository.berechneDurchschnittsnoteNachMatrikelnummer(matrikelnummer);
+    }
+
 }
