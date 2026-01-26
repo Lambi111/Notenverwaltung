@@ -171,7 +171,7 @@ public class NoteServiceTest {
                 () -> noteService.berechneDurchschnittsnote(999)
         );
 
-        assertEquals("Keine Noten für Matrikelnummer 999 gefunden", ex.getMessage());
+        assertEquals("Keine Noten fuer Matrikelnummer 999 gefunden", ex.getMessage());
     }
 
 

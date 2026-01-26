@@ -101,7 +101,7 @@ public class NoteService {
         List<Note> noten = noteRepository.findeAlleNoteNachMatrikelnummer(matrikelnummer);
 
         if (noten.isEmpty()) {
-            throw new IllegalArgumentException("Keine Noten für Matrikelnummer " + matrikelnummer + " gefunden");
+            throw new IllegalArgumentException("Keine Noten fuer Matrikelnummer " + matrikelnummer + " gefunden");
         }
 
         return noteRepository.berechneDurchschnittsnoteNachMatrikelnummer(matrikelnummer);
