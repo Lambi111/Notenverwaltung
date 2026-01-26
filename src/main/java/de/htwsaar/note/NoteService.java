@@ -107,4 +107,15 @@ public class NoteService {
         return noteRepository.berechneDurchschnittsnoteNachMatrikelnummer(matrikelnummer);
     }
 
+    public double berechneDurchschnittsnoteNachKursId(int kursId) {
+        List<Note> noten = noteRepository.findeAlleNoteNachKursId(kursId);
+
+        if (noten.isEmpty()) {
+            throw new IllegalArgumentException("Keine Noten für KursId " + kursId + " gefunden");
+        }
+
+        return noteRepository.berechneDurchschnittsnoteNachKursId(kursId);
+    }
+
+
 }
