@@ -111,7 +111,7 @@ public class NoteService {
         List<Note> noten = noteRepository.findeAlleNoteNachKursId(kursId);
 
         if (noten.isEmpty()) {
-            throw new IllegalArgumentException("Keine Noten für KursId " + kursId + " gefunden");
+            throw new IllegalArgumentException("Keine Noten fuer KursId " + kursId + " gefunden");
         }
 
         return noteRepository.berechneDurchschnittsnoteNachKursId(kursId);

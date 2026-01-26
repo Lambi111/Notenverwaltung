@@ -192,7 +192,7 @@ public class NoteServiceTest {
                 () -> noteService.berechneDurchschnittsnoteNachKursId(99)
         );
 
-        assertEquals("Keine Noten für KursId 99 gefunden", ex.getMessage());
+        assertEquals("Keine Noten fuer KursId 99 gefunden", ex.getMessage());
     }
 
 }
