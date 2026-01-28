@@ -1,11 +1,4 @@
-package de.htwsaar.kurs;
-
-
-import de.htwsaar.UserInterface.KursCLInew;
-import de.htwsaar.UserInterface.NoteCLI;
-import de.htwsaar.UserInterface.StudentCLI;
-import de.htwsaar.UserInterface.CI
-
+package de.htwsaar.UserInterface;
 
 
 import java.util.*;
@@ -13,17 +6,26 @@ import java.util.*;
 public class MainCLI implements CI {
     private final Scanner scanner;
 
-    private final KursCLInew kursUI;
+    private final KursCLI kursUI;
     private final StudentCLI studentUI;
     private final NoteCLI notenUI;
 
 
-    public MainCLI(KursCLInew kursUI, StudentCLI studentUI, NoteCLI notenUI, Scanner scanner) {
+    public MainCLI(KursCLI kursUI, StudentCLI studentUI, NoteCLI notenUI, Scanner scanner) {
 
         this.kursUI = kursUI;
         this.studentUI = studentUI;
         this.notenUI = notenUI;
         this.scanner = scanner;
+    }
+
+    private void menu() {
+        System.out.println(" -- Hauptmenü -- ");
+        System.out.println("1) Kursverwaltung");
+        System.out.println("2) Studentverwaltung");
+        System.out.println("3) Notenverwaltung");
+        System.out.println("0) Beenden");
+        System.out.println("> ");
     }
 
     @Override
@@ -32,21 +34,16 @@ public class MainCLI implements CI {
             boolean running = true;
 
             while(running) {
+                menu();
+                String eingabe = scanner.nextLine().trim();
 
-                int auswahl = scanner.nextInt();
+                int auswahl;
                 try{
-                    auswahl = Integer.parseInt(scanner.nextLine());
+                    auswahl = Integer.parseInt(eingabe);
                 } catch(NumberFormatException e) {
                     System.out.println("❌ Bitte eine Zahl eingeben!");
                     continue;
                 }
-
-                System.out.println("\n -- Hauptmenü -- ");
-                System.out.println("1) Kursverwaltung");
-                System.out.println("2) Studentverwaltung");
-                System.out.println("3) Notenverwaltung");
-                System.out.println("0) Beenden");
-                System.out.println("> ");
 
                 try{
                     switch (auswahl) {

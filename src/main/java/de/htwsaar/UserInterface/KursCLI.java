@@ -6,69 +6,67 @@ import de.htwsaar.kurs.KursService;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class KursCLInew implements CI {
+public class KursCLI implements CI {
 
     private final KursService kursService;
     private final Scanner scanner;
 
-    public KursCLInew(KursService kursService, Scanner scanner) {
+    public KursCLI(KursService kursService, Scanner scanner) {
         this.kursService = kursService;
         this.scanner = scanner;
+    }
+
+    private void zeigeMenu(){
+        System.out.println("-- KursService --");
+        System.out.println("1) Kurs anlegen");
+        System.out.println("2) Alle Kurse anzeigen");
+        System.out.println("3) Kurs nach ID lösschen");
+        System.out.println("4) Kurse nach Titel löschen");
+        System.out.println("5) Kursbeschreibung ändern");
+        System.out.println("6) Kurs suchen");
+        System.out.println("0) Beenden");
+        System.out.println("> ");
     }
 
 
     @Override
     public void starten() {
         try {
-            boolean abbruch = false;
+            while (true) {
+                zeigeMenu();
 
-            while (!abbruch) {
-
-                int auswahl = scanner.nextInt();
-                try {
-                    auswahl = Integer.parseInt(scanner.nextLine());
-                } catch (NumberFormatException e) {
-                    System.out.println("Fehler beim lesen der Auswahl");
-                }
-
-                System.out.println("\n -- KursService -");
-                System.out.println("1) Kurs anlegen");
-                System.out.println("2) Alle Kurse anzeigen");
-                System.out.println("3) Kurs nach ID lösschen");
-                System.out.println("4) Kurse nach Titel löschen");
-                System.out.println("5) Kursbeschreibung ändern");
-                System.out.println("6) Kurs suchen");
-                System.out.println("0) Beenden");
-                System.out.println("> ");
+                String input = scanner.nextLine();
 
                 try {
-                    switch (auswahl) {
-                        case 1:
+                    switch (input) {
+                        case "1":
                             kursAnlegen();
                             break;
-                        case 2:
+                        case "2":
                             alleKurseAnzeigen();
                             break;
-                        case 3:
+                        case "3":
                             kursNachIdLoeschen();
                             break;
-                        case 4:
+                        case "4":
                             kursNachTitelLoeschen();
                             break;
-                        case 5:
+                        case "5":
                             beschreibungAendern();
                             break;
-                        case 6:
+                        case "6":
                             kursSuchen();
                             break;
-                        case 7:
+                        case "7":
                             leistungsUebersicht();
                             break;
-                        case 8:
+                        case "8":
                             durchscnitssnoteKurs();
                             break;
+                        case "0":
+
                         default:
-                            System.out.println("❌ Ungültige Auswahl!" + auswahl);
+                            System.out.println("❌ Ungültige Auswahl!" + input);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("❌ Ungültige Zahleneingabe!");
