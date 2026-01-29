@@ -39,7 +39,7 @@ public class StudentCLI implements CI {
                 case "6" -> deleteStudentByName();
                 case "7" -> changeStudiengang();
                 case "0" -> { return; }
-                default -> System.out.println("Ungültige Eingabe, bitte Zahl auswählen.");
+                default -> System.out.println("❌ Ungültige Auswahl! " + input);
             }
         }
     }

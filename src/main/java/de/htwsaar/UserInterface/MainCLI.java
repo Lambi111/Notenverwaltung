@@ -19,22 +19,18 @@ public class MainCLI implements CI {
         this.scanner = scanner;
     }
 
-    private void menu() {
-        System.out.println(" -- Hauptmenü -- ");
-        System.out.println("1) Kursverwaltung");
-        System.out.println("2) Studentverwaltung");
-        System.out.println("3) Notenverwaltung");
-        System.out.println("0) Beenden");
-        System.out.println("> ");
-    }
-
     @Override
     public void starten() {
         try {
-            boolean running = true;
 
-            while(running) {
-                menu();
+            while(true) {
+                System.out.println(" -- Hauptmenü -- ");
+                System.out.println("1) Kursverwaltung");
+                System.out.println("2) Studentverwaltung");
+                System.out.println("3) Notenverwaltung");
+                System.out.println("0) Beenden");
+                System.out.println("> ");
+
                 String eingabe = scanner.nextLine().trim();
 
                 int auswahl;
@@ -47,22 +43,18 @@ public class MainCLI implements CI {
 
                 try{
                     switch (auswahl) {
-                        case 1:
-                            kursUI.starten();
-                            break;
-                        case 2:
-                            studentUI.starten();
-                            break;
-                        case 3:
-                            notenUI.starten();
-                            break;
-                        case 0:
-                        {
+                        case 1 -> kursUI.starten();
+
+                        case 2 -> studentUI.starten();
+
+                        case 3 -> notenUI.starten();
+
+                        case 0 -> {
                             System.out.println("Programm beendet!");
-                            running = false;
+                            return;
                         }
-                        default:
-                            System.out.println("❌ Ungültige Auswahl!" + auswahl);
+
+                        default -> System.out.println("❌ Ungültige Auswahl!" + auswahl);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("❌ Ungültige Zahleneingabe!");

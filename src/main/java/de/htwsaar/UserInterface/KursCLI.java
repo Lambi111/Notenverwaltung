@@ -16,67 +16,32 @@ public class KursCLI implements CI {
         this.scanner = scanner;
     }
 
-    private void zeigeMenu(){
-        System.out.println("-- KursService --");
-        System.out.println("1) Kurs anlegen");
-        System.out.println("2) Alle Kurse anzeigen");
-        System.out.println("3) Kurs nach ID lösschen");
-        System.out.println("4) Kurse nach Titel löschen");
-        System.out.println("5) Kursbeschreibung ändern");
-        System.out.println("6) Kurs suchen");
-        System.out.println("0) Beenden");
-        System.out.println("> ");
-    }
-
-
     @Override
     public void starten() {
-        try {
             while (true) {
-                zeigeMenu();
+                System.out.println("-- KursService --");
+                System.out.println("1) Kurs anlegen");
+                System.out.println("2) Alle Kurse anzeigen");
+                System.out.println("3) Kurs nach ID lösschen");
+                System.out.println("4) Kurse nach Titel löschen");
+                System.out.println("5) Kursbeschreibung ändern");
+                System.out.println("6) Kurs suchen");
+                System.out.println("0) Beenden");
+                System.out.println("> ");
 
                 String input = scanner.nextLine();
 
-                try {
-                    switch (input) {
-                        case "1":
-                            kursAnlegen();
-                            break;
-                        case "2":
-                            alleKurseAnzeigen();
-                            break;
-                        case "3":
-                            kursNachIdLoeschen();
-                            break;
-                        case "4":
-                            kursNachTitelLoeschen();
-                            break;
-                        case "5":
-                            beschreibungAendern();
-                            break;
-                        case "6":
-                            kursSuchen();
-                            break;
-                        case "7":
-                            leistungsUebersicht();
-                            break;
-                        case "8":
-                            durchscnitssnoteKurs();
-                            break;
-                        case "0":
-
-                        default:
-                            System.out.println("❌ Ungültige Auswahl!" + input);
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Ungültige Zahleneingabe!");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("❌ " + e.getMessage());
+                switch (input) {
+                    case "1" -> kursAnlegen();
+                    case "2" -> alleKurseAnzeigen();
+                    case "3" -> kursNachIdLoeschen();
+                    case "4" -> kursNachTitelLoeschen();
+                    case "5" -> beschreibungAendern();
+                    case "6" -> kursSuchen();
+                    case "0" -> { return; }
+                    default -> System.out.println("❌ Ungültige Auswahl! " + input);
                 }
             }
-        } finally {
-            scanner.close();
-        }
 
     }
 
