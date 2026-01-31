@@ -29,6 +29,7 @@ public class NoteCLI implements CI {
                 System.out.println("7) Note suchen");
                 System.out.println("8) Durchschnittsnote eines Studenten berechnen");
                 System.out.println("9) Durchschnittsnote eines Kurses berechnen");
+                System.out.println("10) Leistungsübersicht eines Kurses");
                 System.out.println("10) Leistungsübersicht eines Studenten");
                 System.out.println("0) Beenden");
                 System.out.println("> ");
@@ -45,7 +46,8 @@ public class NoteCLI implements CI {
                         case "7" -> noteSuchen();
                         case "8" -> durchschnittBerechnen();
                         case "9" -> durchschnittKursBerechnen();
-                        case "10" -> leistungsUebersicht();
+                        case "10" -> leistungsUbersichtKurs();
+                        case "11" -> leistungsUebersicht();
                         case "0" -> {
                             System.out.println("Programm beendet!");
                             return;
@@ -176,11 +178,19 @@ public class NoteCLI implements CI {
         System.out.println("📊 Kurs-Durchschnittsnote: " + durchschnitt);
     }
 
+    private void leistungsUbersichtKurs() {
+        System.out.println("KursId: ");
+        int kursId = Integer.parseInt(scanner.nextLine());
+
+        var bericht = noteService.erstelleLeistungsberichtKurs(kursId);
+        System.out.println("Kurserfolg: " + bericht);
+    }
+
     private void leistungsUebersicht() {
         System.out.println("Matrikelnummer: ");
         int matrikelnummer = Integer.parseInt(scanner.nextLine());
 
-        var bericht = noteService.erstelleLeistungsbericht(matrikelnummer);
+        var bericht = noteService.erstelleLeistungsberichtStudent(matrikelnummer);
 
         System.out.println("Leistungsbericht: ");
         bericht.forEach(System.out::println);
