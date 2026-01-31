@@ -23,12 +23,13 @@ public class NoteCLI implements CI {
                 System.out.println("1) Note anlegen");
                 System.out.println("2) Alle Noten anzeigen");
                 System.out.println("3) Note nach ID löschen");
-                System.out.println("4) Note nach KursId & Matrikelnummer löschen");
-                System.out.println("5) Note ändern");
-                System.out.println("6) Note suchen");
-                System.out.println("7) Durchschnittsnote eines Studenten berechnen");
-                System.out.println("8) Durchschnittsnote eines Kurses berechnen");
-                System.out.println("9) Leistungsübersicht eines Studenten");
+                System.out.println("4) Alle Noten löschen");
+                System.out.println("5) Note nach KursId & Matrikelnummer löschen");
+                System.out.println("6) Note ändern");
+                System.out.println("7) Note suchen");
+                System.out.println("8) Durchschnittsnote eines Studenten berechnen");
+                System.out.println("9) Durchschnittsnote eines Kurses berechnen");
+                System.out.println("10) Leistungsübersicht eines Studenten");
                 System.out.println("0) Beenden");
                 System.out.println("> ");
                 String input = scanner.nextLine();
@@ -38,16 +39,18 @@ public class NoteCLI implements CI {
                         case "1" -> noteAnlegen();
                         case "2" -> alleNotenAnzeigen();
                         case "3" -> noteNachIdLoeschen();
-                        case "4" -> noteNachKursUndMatrikelLoeschen();
-                        case "5" -> noteAendern();
-                        case "6" -> noteSuchen();
-                        case "7" -> durchschnittBerechnen();
-                        case "8" -> durchschnittKursBerechnen();
+                        case "4" -> alleNotenLoeschen();
+                        case "5" -> noteNachKursUndMatrikelLoeschen();
+                        case "6" -> noteAendern();
+                        case "7" -> noteSuchen();
+                        case "8" -> durchschnittBerechnen();
+                        case "9" -> durchschnittKursBerechnen();
+                        case "10" -> leistungsUebersicht();
                         case "0" -> {
                             System.out.println("Programm beendet!");
                             return;
                         }
-                        default -> System.out.println("❌ Ungültige ent! " + input);
+                        default -> System.out.println("❌ Ungültige Auswahl! " + input);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("❌ Ungültige Zahleneingabe!");
@@ -85,6 +88,11 @@ public class NoteCLI implements CI {
         int id = Integer.parseInt(scanner.nextLine());
         noteService.loescheNoteNachId(id);
         System.out.println("✅ Note gelöscht");
+    }
+
+    private void alleNotenLoeschen() {
+        noteService.loescheAlleNoten();
+        System.out.println("Alle Noten wurden erfolgreich gelöscht. ");
     }
 
     private void noteNachKursUndMatrikelLoeschen() {
@@ -166,6 +174,16 @@ public class NoteCLI implements CI {
 
         double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(kursId);
         System.out.println("📊 Kurs-Durchschnittsnote: " + durchschnitt);
+    }
+
+    private void leistungsUebersicht() {
+        System.out.println("Matrikelnummer: ");
+        int matrikelnummer = Integer.parseInt(scanner.nextLine());
+
+        var bericht = noteService.erstelleLeistungsbericht(matrikelnummer);
+
+        System.out.println("Leistungsbericht: ");
+        bericht.forEach(System.out::println);
     }
 
 }
