@@ -1,60 +1,58 @@
-package de.htwsaar.note;
+package de.htwsaar.UserInterface;
+
+
+import de.htwsaar.note.NoteService;
 
 import java.util.*;
 
-public class NoteCLI {
+public class NoteCLI implements CI {
 
     private final NoteService noteService;
+    private final Scanner scanner;
 
-    public NoteCLI(NoteService noteService) {
+    public NoteCLI(NoteService noteService, Scanner scanner) {
         this.noteService = noteService;
+        this.scanner = scanner;
     }
 
-    private void zeigeMenue() {
-        System.out.println("\nBitte wählen:");
-        System.out.println("1) Note anlegen");
-        System.out.println("2) Alle Noten anzeigen");
-        System.out.println("3) Note nach ID löschen");
-        System.out.println("4) Note nach KursId & Matrikelnummer löschen");
-        System.out.println("5) Note ändern");
-        System.out.println("6) Note suchen");
-        System.out.println("7) Durchschnittsnote eines Studenten berechnen");
-        System.out.println("8) Durchschnittsnote eines Kurses berechnen");
-        System.out.println("0) Beenden");
-        System.out.println("> ");
-    }
+    @Override
+    public void starten() {
 
-    public void start() {
-        Scanner scanner = new Scanner(System.in);
-        try {
-            boolean running = true;
-
-            while (running) {
-                zeigeMenue();
-
-                int auswahl;
-                try {
-                    auswahl = Integer.parseInt(scanner.nextLine());
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Bitte eine Zahl eingeben!");
-                    continue;
-                }
+            while (true) {
+                System.out.println("-- Studentservice --");
+                System.out.println("1) Note anlegen");
+                System.out.println("2) Alle Noten anzeigen");
+                System.out.println("3) Note nach ID löschen");
+                System.out.println("4) Alle Noten löschen");
+                System.out.println("5) Note nach KursId & Matrikelnummer löschen");
+                System.out.println("6) Note ändern");
+                System.out.println("7) Note suchen");
+                System.out.println("8) Durchschnittsnote eines Studenten berechnen");
+                System.out.println("9) Durchschnittsnote eines Kurses berechnen");
+                System.out.println("10) Leistungsübersicht eines Kurses");
+                System.out.println("10) Leistungsübersicht eines Studenten");
+                System.out.println("0) Beenden");
+                System.out.println("> ");
+                String input = scanner.nextLine();
 
                 try {
-                    switch (auswahl) {
-                        case 1 -> noteAnlegen(scanner);
-                        case 2 -> alleNotenAnzeigen();
-                        case 3 -> noteNachIdLoeschen(scanner);
-                        case 4 -> noteNachKursUndMatrikelLoeschen(scanner);
-                        case 5 -> noteAendern(scanner);
-                        case 6 -> noteSuchen(scanner);
-                        case 7 -> durchschnittBerechnen(scanner);
-                        case 8 -> durchschnittKursBerechnen(scanner);
-                        case 0 -> {
+                    switch (input) {
+                        case "1" -> noteAnlegen();
+                        case "2" -> alleNotenAnzeigen();
+                        case "3" -> noteNachIdLoeschen();
+                        case "4" -> alleNotenLoeschen();
+                        case "5" -> noteNachKursUndMatrikelLoeschen();
+                        case "6" -> noteAendern();
+                        case "7" -> noteSuchen();
+                        case "8" -> durchschnittBerechnen();
+                        case "9" -> durchschnittKursBerechnen();
+                        case "10" -> leistungsUbersichtKurs();
+                        case "11" -> leistungsUebersicht();
+                        case "0" -> {
                             System.out.println("Programm beendet!");
-                            running = false;
+                            return;
                         }
-                        default -> System.out.println("❌ Ungültige Auswahl! " + auswahl);
+                        default -> System.out.println("❌ Ungültige Auswahl! " + input);
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("❌ Ungültige Zahleneingabe!");
@@ -62,12 +60,9 @@ public class NoteCLI {
                     System.out.println("❌ " + e.getMessage());
                 }
             }
-        } finally {
-            scanner.close();
-        }
     }
 
-    private void noteAnlegen(Scanner scanner) {
+    private void noteAnlegen() {
         System.out.println("Note: ");
         int note = Integer.parseInt(scanner.nextLine());
 
@@ -90,14 +85,19 @@ public class NoteCLI {
         }
     }
 
-    private void noteNachIdLoeschen(Scanner scanner) {
+    private void noteNachIdLoeschen() {
         System.out.println("Note-ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         noteService.loescheNoteNachId(id);
         System.out.println("✅ Note gelöscht");
     }
 
-    private void noteNachKursUndMatrikelLoeschen(Scanner scanner) {
+    private void alleNotenLoeschen() {
+        noteService.loescheAlleNoten();
+        System.out.println("Alle Noten wurden erfolgreich gelöscht.git  ");
+    }
+
+    private void noteNachKursUndMatrikelLoeschen() {
         System.out.println("KursId: ");
         int kursId = Integer.parseInt(scanner.nextLine());
 
@@ -108,7 +108,7 @@ public class NoteCLI {
         System.out.println("✅ Note gelöscht");
     }
 
-    private void noteAendern(Scanner scanner) {
+    private void noteAendern() {
         System.out.println("1) Nach ID");
         System.out.println("2) Nach KursId & Matrikelnummer");
         System.out.println("> ");
@@ -136,7 +136,7 @@ public class NoteCLI {
         }
     }
 
-    private void noteSuchen(Scanner scanner) {
+    private void noteSuchen() {
         System.out.println("1) Nach ID");
         System.out.println("2) Nach KursId");
         System.out.println("3) Nach Matrikelnummer");
@@ -162,7 +162,7 @@ public class NoteCLI {
         }
     }
 
-    private void durchschnittBerechnen(Scanner scanner) {
+    private void durchschnittBerechnen() {
         System.out.println("Matrikelnummer: ");
         int matrikelnummer = Integer.parseInt(scanner.nextLine());
 
@@ -170,12 +170,30 @@ public class NoteCLI {
         System.out.println("📊 Durchschnittsnote: " + durchschnitt);
     }
 
-    private void durchschnittKursBerechnen(Scanner scanner) {
+    private void durchschnittKursBerechnen() {
         System.out.println("KursId: ");
         int kursId = Integer.parseInt(scanner.nextLine());
 
         double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(kursId);
         System.out.println("📊 Kurs-Durchschnittsnote: " + durchschnitt);
+    }
+
+    private void leistungsUbersichtKurs() {
+        System.out.println("KursId: ");
+        int kursId = Integer.parseInt(scanner.nextLine());
+
+        var bericht = noteService.erstelleLeistungsberichtKurs(kursId);
+        System.out.println("Kurserfolg: " + bericht);
+    }
+
+    private void leistungsUebersicht() {
+        System.out.println("Matrikelnummer: ");
+        int matrikelnummer = Integer.parseInt(scanner.nextLine());
+
+        var bericht = noteService.erstelleLeistungsberichtStudent(matrikelnummer);
+
+        System.out.println("Leistungsbericht: ");
+        bericht.forEach(System.out::println);
     }
 
 }

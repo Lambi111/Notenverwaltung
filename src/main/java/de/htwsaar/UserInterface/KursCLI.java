@@ -1,69 +1,51 @@
-package de.htwsaar.kurs;
+package de.htwsaar.UserInterface;
 
-import java.util.*;
+import de.htwsaar.kurs.Kurs;
+import de.htwsaar.kurs.KursService;
 
-public class KursCLI {
+import java.util.Optional;
+import java.util.Scanner;
+
+public class KursCLI implements CI {
+
     private final KursService kursService;
+    private final Scanner scanner;
 
-    public KursCLI(KursService kursService) {
+    public KursCLI(KursService kursService, Scanner scanner) {
         this.kursService = kursService;
+        this.scanner = scanner;
     }
 
-    private void zeigeMenue() {
-        System.out.println("\nBitte wählen:");
-        System.out.println("1) Kurs anlegen");
-        System.out.println("2) Alle Kurse anzeigen");
-        System.out.println("3) Kurs nach ID löschen");
-        System.out.println("4) Kurse nach Titel löschen");
-        System.out.println("5) Kursbeschreibung ändern");
-        System.out.println("6) Kurs suchen");
-        System.out.println("0) Beenden");
-        System.out.println("> ");
-    }
+    @Override
+    public void starten() {
+            while (true) {
+                System.out.println("-- KursService --");
+                System.out.println("1) Kurs anlegen");
+                System.out.println("2) Alle Kurse anzeigen");
+                System.out.println("3) Kurs nach ID lösschen");
+                System.out.println("4) Kurse nach Titel löschen");
+                System.out.println("5) Kursbeschreibung ändern");
+                System.out.println("6) Kurs suchen");
+                System.out.println("0) Beenden");
+                System.out.println("> ");
 
-    public void start() {
-        Scanner scanner = new Scanner(System.in);
-        try{
-            boolean running = true;
+                String input = scanner.nextLine();
 
-            while(running) {
-                zeigeMenue();
-
-                int auswahl;
-                try{
-                    auswahl = Integer.parseInt(scanner.nextLine());
-                } catch(NumberFormatException e) {
-                    System.out.println("❌ Bitte eine Zahl eingeben!");
-                    continue;
-                }
-
-                try{
-                    switch (auswahl) {
-                        case 1 -> kursAnlegen(scanner);
-                        case 2 -> alleKurseAnzeigen();
-                        case 3 -> kursNachIdLoeschen(scanner);
-                        case 4 -> kursNachTitelLoeschen(scanner);
-                        case 5 -> beschreibungAendern(scanner);
-                        case 6 -> kursSuchen(scanner);
-                        case 0 -> {
-                            System.out.println("Programm beendet!");
-                            running = false;
-                        }
-                        default -> System.out.println("❌ Ungültige Auswahl!" + auswahl);
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Ungültige Zahleneingabe!");
-                } catch(IllegalArgumentException e ) {
-                    System.out.println("❌ " + e.getMessage());
+                switch (input) {
+                    case "1" -> kursAnlegen();
+                    case "2" -> alleKurseAnzeigen();
+                    case "3" -> kursNachIdLoeschen();
+                    case "4" -> kursNachTitelLoeschen();
+                    case "5" -> beschreibungAendern();
+                    case "6" -> kursSuchen();
+                    case "0" -> { return; }
+                    default -> System.out.println("❌ Ungültige Auswahl! " + input);
                 }
             }
-        } finally {
-            scanner.close();
-        }
 
     }
 
-    private void kursAnlegen(Scanner scanner) {
+    private void kursAnlegen() {
         System.out.println("Titel: ");
         String titel = scanner.nextLine();
 
@@ -86,21 +68,21 @@ public class KursCLI {
         }
     }
 
-    private void kursNachIdLoeschen(Scanner scanner) {
+    private void kursNachIdLoeschen() {
         System.out.println("Nach ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         kursService.loescheKurs(id);
         System.out.println("✅ Kurs gelöscht");
     }
 
-    private void kursNachTitelLoeschen(Scanner scanner) {
+    private void kursNachTitelLoeschen() {
         System.out.println("Titel: ");
         String titel = scanner.nextLine();
         kursService.loescheKurseNachTitel(titel);
         System.out.println("✅ Kurse gelöscht");
     }
 
-    private void beschreibungAendern(Scanner scanner) {
+    private void beschreibungAendern() {
         System.out.println("1) Nach ID:");
         System.out.println("2) Nach Titel:");
         System.out.println("> ");
@@ -122,7 +104,7 @@ public class KursCLI {
         }
     }
 
-    private void kursSuchen(Scanner scanner) {
+    private void kursSuchen() {
         System.out.println("1) Nach ID:");
         System.out.println("2) Nach Titel:");
         System.out.println("> ");
@@ -157,4 +139,43 @@ public class KursCLI {
             System.out.println("❌ Ungültige Auswahl!");
         }
     }
+
+    private void leistungsUebersicht() {
+        System.out.println("1) Nach ID:");
+        System.out.println("2) Nach Titel:");
+        System.out.println("> ");
+        int wahl = Integer.parseInt(scanner.nextLine());
+        if (wahl == 1) {
+            System.out.println("Kurs-ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            //Methodenaufruf Leistung
+        }
+        if (wahl == 2) {
+            System.out.println("Titel: ");
+            String titel = scanner.nextLine();
+            //Methodenaufruf Leistung
+        } else {
+            System.out.println("Ungültige Auswahl!");
+        }
+    }
+
+    private void durchscnitssnoteKurs() {
+        System.out.println("1) Nach ID:");
+        System.out.println("2) Nach Titel:");
+        System.out.println("> ");
+        int wahl = Integer.parseInt(scanner.nextLine());
+        if (wahl == 1) {
+            System.out.println("Kurs-ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            //Methodenaufruf durchschnitt
+        }
+        if (wahl == 2) {
+            System.out.println("Titel: ");
+            String titel = scanner.nextLine();
+            //Methodenaufruf durchschnitt
+        } else {
+            System.out.println("Ungültige Auswahl!");
+        }
+    }
 }
+
