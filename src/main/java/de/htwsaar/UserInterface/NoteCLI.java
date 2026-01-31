@@ -92,7 +92,7 @@ public class NoteCLI implements CI {
 
     private void alleNotenLoeschen() {
         noteService.loescheAlleNoten();
-        System.out.println("Alle Noten wurden erfolgreich gelöscht. ");
+        System.out.println("Alle Noten wurden erfolgreich gelöscht.git  ");
     }
 
     private void noteNachKursUndMatrikelLoeschen() {
