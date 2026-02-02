@@ -17,7 +17,7 @@ public class StudentCLI implements CI {
 
     @Override
     public void starten() {
-        while(true) {
+        while (true) {
             System.out.println("-- Studentenservice --");
             System.out.println("1) Neuen Studenten anlegen");
             System.out.println("2) Alle Studenten anzeigen");
@@ -30,19 +30,27 @@ public class StudentCLI implements CI {
 
             String input = scanner.nextLine();
 
-            switch(input) {
-                case "1" -> createStudent();
-                case "2" -> showAllStudents();
-                case "3" -> findStudentByMatrikelnummer();
-                case "4" -> findStudentByName();
-                case "5" -> deleteStudentByMatrikelnummer();
-                case "6" -> deleteStudentByName();
-                case "7" -> changeStudiengang();
-                case "0" -> { return; }
-                default -> System.out.println("❌ Ungültige Auswahl! " + input);
+            try {
+                switch (input) {
+                    case "1" -> createStudent();
+                    case "2" -> showAllStudents();
+                    case "3" -> findStudentByMatrikelnummer();
+                    case "4" -> findStudentByName();
+                    case "5" -> deleteStudentByMatrikelnummer();
+                    case "6" -> deleteStudentByName();
+                    case "7" -> changeStudiengang();
+                    case "0" -> {
+                        return;
+                    }
+                    default -> System.out.println("❌ Ungültige Auswahl! " + input);
+                }
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ Ungültige Zahleneingabe!");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("❌ " + e.getMessage());
+                }
             }
         }
-    }
 
     private void createStudent() {
         System.out.println("Vorname: ");
