@@ -117,5 +117,62 @@ public class NoteService {
         return noteRepository.berechneDurchschnittsnoteNachKursId(kursId);
     }
 
+    public List<String> erstelleLeistungsberichtStudent(int matrikelnummer) {
+        List<Note> noten = noteRepository.findeAlleNoteNachMatrikelnummer(matrikelnummer);
 
+        if (noten.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Keine Noten für Matrikelnummer " + matrikelnummer
+            );
+        }
+
+        List<String> bericht = new ArrayList<>();
+
+        for (Note note : noten) {
+            String status;
+
+            if(note.getNote() <= 4) {
+                status = "nicht bestanden.";
+            } else {
+                status = "bestanden.";
+            }
+
+            String eintrag =
+                    "Kurs-ID: " + note.getKursId() +
+                    ", Note: " + note.getNote() +
+                    ", Status: " + status;
+
+            bericht.add(eintrag);
+        }
+        return bericht;
+    }
+
+    public Map<String, Integer> erstelleLeistungsberichtKurs(int kursId) {
+        List<Note> noten = noteRepository.findeAlleNoteNachKursId(kursId);
+
+        if (noten.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Kein Kurs " + kursId + " gefunden"
+            );
+        }
+
+        int bestanden = 0;
+        int nichtBestanden = 0;
+
+        for (Note note : noten) {
+            if(note.getNote() <= 4) {
+                bestanden++;
+            } else {
+                nichtBestanden++;
+            }
+        }
+
+        Map<String, Integer> bericht = new HashMap<>();
+
+        bericht.put("bestanden", bestanden);
+        bericht.put("nicht bestanden", nichtBestanden);
+
+        return bericht;
+
+    }
 }
