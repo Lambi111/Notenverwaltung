@@ -59,8 +59,24 @@ public class KursCLI implements CI {
         System.out.println("Beschreibung: ");
         String beschreibung = scanner.nextLine();
 
-        System.out.println("Semester: ");
-        int semester = Integer.parseInt(scanner.nextLine());
+        /*System.out.println("Semester: ");
+        int semester = Integer.parseInt(scanner.nextLine());*/
+        int semester;
+        while(true) {
+            System.out.println("Semester: ");
+            String eingabe = scanner.nextLine();
+
+            try{
+                semester = Integer.parseInt(eingabe);
+                if(semester <= 0) {
+                    System.out.println("❌ Semester muss größer als 0 sein.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Ungültige Zahleneingabe! Bitte erneut eingeben.");
+            }
+        }
 
         kursService.erstelleKurs(titel, beschreibung, semester);
         System.out.println("✅ Kurs gespeichert");
