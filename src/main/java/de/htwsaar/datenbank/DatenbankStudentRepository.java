@@ -21,17 +21,10 @@ public class DatenbankStudentRepository implements StudentRepository {
     public static class Tabelle {
         public static final Table<Record> STUDENT = DSL.table(DSL.name("Student"));
 
-        public static final Field<Integer> MATRIKELNUMMER =
-                STUDENT.field(DSL.name("Matrikelnummer"), Integer.class);
-
-        public static final Field<String> VORNAME =
-                STUDENT.field(DSL.name("Vorname"), String.class);
-
-        public static final Field<String> NACHNAME =
-                STUDENT.field(DSL.name("Nachname"), String.class);
-
-        public static final Field<String> STUDIENGANG =
-                STUDENT.field(DSL.name("Studiengang"), String.class);
+        public static final Field<Integer> MATRIKELNUMMER = DSL.field(DSL.name("Matrikelnummer"), Integer.class);
+        public static final Field<String> VORNAME = DSL.field(DSL.name("Vorname"), String.class);
+        public static final Field<String> NACHNAME = DSL.field(DSL.name("Nachname"), String.class);
+        public static final Field<String> STUDIENGANG = DSL.field(DSL.name("Studiengang"), String.class);
     }
 
     private final DSLContext dsl;

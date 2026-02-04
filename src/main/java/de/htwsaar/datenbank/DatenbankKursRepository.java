@@ -5,8 +5,6 @@ import de.htwsaar.kurs.KursRepository;
 import org.jooq.*;
 import org.jooq.Record;
 import org.jooq.impl.DSL;
-import org.jooq.impl.SQLDataType;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

@@ -2,10 +2,12 @@ package de.htwsaar.Note;
 
 import de.htwsaar.datenbank.DatenbankKursRepository;
 import de.htwsaar.datenbank.DatenbankStudentRepository;
+import de.htwsaar.kurs.Kurs;
 import de.htwsaar.note.Note;
 
 import de.htwsaar.datenbank.DatenbankNoteRepository;
 import de.htwsaar.note.NoteService;
+import de.htwsaar.student.Student;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -45,10 +47,14 @@ public class NoteServiceTest {
 
     @Test
     void speichereErstellteNoteInDatenbank() {
-        noteService.erstelleNote(2, 1, 12345);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
         List<Note> noten = repo.zeigeAlleNoten();
-        assertEquals(2, noten.get(0).getNote());
+        assertEquals(1, noten.get(0).getNote());
     }
 
     @Test
@@ -60,7 +66,11 @@ public class NoteServiceTest {
 
     @Test
     void loescheNoteNachId() {
-        noteService.erstelleNote(2, 1, 12345);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
         Note note = repo.zeigeAlleNoten().get(0);
 
         noteService.loescheNoteNachId(note.getId());
@@ -70,14 +80,17 @@ public class NoteServiceTest {
 
     @Test
     void loescheNoteNachKursIdUndMatrikelnummer() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 20, 222);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        noteService.loescheNoteNachKursIdUndMatrikelnummer(10, 111);
+        noteService.loescheNoteNachKursIdUndMatrikelnummer(1, 1000000);
 
         List<Note> verbleibend = repo.zeigeAlleNoten();
         assertEquals(1, verbleibend.size());
-        assertEquals(20, verbleibend.get(0).getKursId());
+        assertEquals(2, verbleibend.get(0).getKursId());
     }
 
     @Test
@@ -92,8 +105,11 @@ public class NoteServiceTest {
 
     @Test
     void zeigeAlleNoten() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 20, 222);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
         List<Note> noten = noteService.zeigeAlleNoten();
 
@@ -102,12 +118,16 @@ public class NoteServiceTest {
 
     @Test
     void findeNoteNachId() {
-        noteService.erstelleNote(3, 10, 123);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
         Note note = repo.zeigeAlleNoten().get(0);
 
         Optional<Note> gefunden = Optional.ofNullable(noteService.findeNoteNachId(note.getId()));
         assertTrue(gefunden.isPresent());
-        assertEquals(3, gefunden.get().getNote());
+        assertEquals(1, gefunden.get().getNote());
     }
 
     @Test
@@ -122,28 +142,37 @@ public class NoteServiceTest {
 
     @Test
     void findeAlleNotenNachKursId() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 10, 222);
-        noteService.erstelleNote(3, 20, 333);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        List<Note> noten = noteService.findeAlleNoteNachKursId(10);
+        List<Note> noten = noteService.findeAlleNoteNachKursId(1);
 
-        assertEquals(2, noten.size());
+        assertEquals(1, noten.size());
     }
 
     @Test
     void findeAlleNotenNachMatrikelnummer() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 20, 111);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        List<Note> noten = noteService.findeAlleNoteNachMatrikelnummer(111);
+        List<Note> noten = noteService.findeAlleNoteNachMatrikelnummer(1000000);
 
         assertEquals(2, noten.size());
     }
 
     @Test
     void aendereNoteNachId() {
-        noteService.erstelleNote(4, 10, 111);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
         Note note = repo.zeigeAlleNoten().get(0);
 
         noteService.aendereNoteNachId(note.getId(), 1);
@@ -156,23 +185,29 @@ public class NoteServiceTest {
 
     @Test
     void aendereNoteNachKursUndMatrikelnummer() {
-        noteService.erstelleNote(5, 10, 111);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        noteService.aendereNoteNachKursIDUndMatrikelnummer(10, 111, 2);
+        noteService.aendereNoteNachKursIDUndMatrikelnummer(1, 1000000, 3);
 
         Note aktualisiert = repo.zeigeAlleNoten().get(0);
-        assertEquals(2, aktualisiert.getNote());
+        assertEquals(3, aktualisiert.getNote());
     }
 
     @Test
     void berechneDurchschnittsnote() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 20, 111);
-        noteService.erstelleNote(3, 30, 111);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        double durchschnitt = noteService.berechneDurchschnittsnote(111);
+        double durchschnitt = noteService.berechneDurchschnittsnote(1000000);
 
-        assertEquals(2.0, durchschnitt);
+        assertEquals(1.5, durchschnitt);
     }
 
     @Test
@@ -187,13 +222,16 @@ public class NoteServiceTest {
 
     @Test
     void berechneDurchschnittsnoteNachKursId() {
-        noteService.erstelleNote(1, 10, 111);
-        noteService.erstelleNote(2, 10, 222);
-        noteService.erstelleNote(3, 10, 333);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        studentRepo.saveStudent(new Student("Erika", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 1, 1000001);
 
-        double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(10);
+        double durchschnitt = noteService.berechneDurchschnittsnoteNachKursId(1);
 
-        assertEquals(2.0, durchschnitt);
+        assertEquals(1.5, durchschnitt);
     }
 
     @Test
@@ -208,15 +246,16 @@ public class NoteServiceTest {
 
     @Test
     void erstelleLeistungsberichtFuerStudent() {
-        noteService.erstelleNote(2, 10, 111);
-        noteService.erstelleNote(5, 20, 111);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(6, 2, 1000000);
 
-        List<String> bericht = noteService.erstelleLeistungsberichtStudent(111);
+        List<String> bericht = noteService.erstelleLeistungsberichtStudent(1000000);
 
-        assertTrue(bericht.get(0).contains("Kurs-ID: 10"));
-        assertTrue(bericht.get(0).contains("Status: bestanden."));
-        assertTrue(bericht.get(1).contains("Kurs-ID: 20"));
-        assertTrue(bericht.get(1).contains("Status: nicht bestanden."));
+        assertEquals("Kurs-ID: 1, Note: 1, Status: bestanden.", bericht.get(0));
+        assertEquals("Kurs-ID: 2, Note: 6, Status: nicht bestanden.", bericht.get(1));
     }
 
     @Test
@@ -233,14 +272,16 @@ public class NoteServiceTest {
 
     @Test
     void erstelleLeistungsberichtKurs() {
-        noteService.erstelleNote(2, 10, 111);
-        noteService.erstelleNote(3, 10, 222);
-        noteService.erstelleNote(5, 10, 333);
+        kursRepo.speichere(new Kurs("Mathe 1", "wichtig", 1));
+        kursRepo.speichere(new Kurs("Informatik 1", "noch wichtiger", 1));
+        studentRepo.saveStudent(new Student("Max", "Mustermann", "PI"));
+        noteService.erstelleNote(1, 1, 1000000);
+        noteService.erstelleNote(2, 2, 1000000);
 
-        Map<String, Integer> bericht = noteService.erstelleLeistungsberichtKurs(10);
+        Map<String, Integer> bericht = noteService.erstelleLeistungsberichtKurs(1);
 
-        assertEquals(2, bericht.get("bestanden"));
-        assertEquals(1, bericht.get("nicht bestanden"));
+        assertEquals(1, bericht.get("bestanden"));
+        assertEquals(0, bericht.get("nicht bestanden"));
     }
 
     @Test
