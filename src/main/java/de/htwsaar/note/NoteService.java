@@ -132,9 +132,9 @@ public class NoteService {
             String status;
 
             if(note.getNote() <= 4) {
-                status = "nicht bestanden.";
-            } else {
                 status = "bestanden.";
+            } else {
+                status = "nicht bestanden.";
             }
 
             String eintrag =
