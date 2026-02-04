@@ -3,87 +3,58 @@ package de.htwsaar.UserInterface;
 import de.htwsaar.kurs.Kurs;
 import de.htwsaar.kurs.KursService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class KursCLI implements CI {
-
+public class KursCLI extends AbstraktCLI {
     private final KursService kursService;
-    private final Scanner scanner;
 
     public KursCLI(KursService kursService, Scanner scanner) {
+        super(scanner);
         this.kursService = kursService;
-        this.scanner = scanner;
     }
 
     @Override
     public void starten() {
-            while (true) {
-                System.out.println("-- KursService --");
-                System.out.println("1) Kurs anlegen");
-                System.out.println("2) Alle Kurse anzeigen");
-                System.out.println("3) Kurs nach ID lösschen");
-                System.out.println("4) Kurse nach Titel löschen");
-                System.out.println("5) Kursbeschreibung ändern");
-                System.out.println("6) Kurs suchen");
-                System.out.println("0) Beenden");
-                System.out.println("> ");
+        while(true) {
+            header("Kursverwaltung");
+            System.out.println("1) Kurs anlegen");
+            System.out.println("2) Alle Kurse anzeigen");
+            System.out.println("3) Kurs nach ID loeschen");
+            System.out.println("4) Kurse nach Titel loeschen");
+            System.out.println("5) Beschreibung aendern");
+            System.out.println("6) Kurs suchen");
+            System.out.println("0) Zurueck");
 
-                String input = scanner.nextLine();
-
-                try {
-                    switch (input) {
-                        case "1" -> kursAnlegen();
-                        case "2" -> alleKurseAnzeigen();
-                        case "3" -> kursNachIdLoeschen();
-                        case "4" -> kursNachTitelLoeschen();
-                        case "5" -> beschreibungAendern();
-                        case "6" -> kursSuchen();
-                        case "0" -> {
-                            return;
-                        }
-                        default -> System.out.println("❌ Ungültige Auswahl! " + input);
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Ungültige Zahleneingabe!");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("❌ " + e.getMessage());
+            try{
+                switch(read("Auswahl")) {
+                    case "1" -> kursAnlegen();
+                    case "2" -> alleKurseAnzeigen();
+                    case "3" -> kursNachIDLoeschen();
+                    case "4" -> kursNachTitelLoeschen();
+                    case "5" -> beschreibungAendern();
+                    case "6" -> kursSuchen();
+                    case "0" -> { return; }
+                    default -> System.out.println("❌ Ungültige Auswahl");
                 }
+            } catch(IllegalArgumentException e) {
+                System.out.println("❌ " + e.getMessage());
             }
+        }
     }
 
     private void kursAnlegen() {
-        System.out.println("Titel: ");
-        String titel = scanner.nextLine();
-
-        System.out.println("Beschreibung: ");
-        String beschreibung = scanner.nextLine();
-
-        /*System.out.println("Semester: ");
-        int semester = Integer.parseInt(scanner.nextLine());*/
-        int semester;
-        while(true) {
-            System.out.println("Semester: ");
-            String eingabe = scanner.nextLine();
-
-            try{
-                semester = Integer.parseInt(eingabe);
-                if(semester <= 0) {
-                    System.out.println("❌ Semester muss größer als 0 sein.");
-                    continue;
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Ungültige Zahleneingabe! Bitte erneut eingeben.");
-            }
-        }
+        String titel = read("Titel");
+        String beschreibung = read("Beschreibung");
+        int semester = readInt("Semester");
 
         kursService.erstelleKurs(titel, beschreibung, semester);
         System.out.println("✅ Kurs gespeichert");
     }
 
     private void alleKurseAnzeigen() {
-        var kurse = kursService.zeigeAlleKurse();
+        List<Kurs> kurse = kursService.zeigeAlleKurse();
         if(kurse.isEmpty()) {
             System.out.println("ℹ️ Keine Kurse vorhanden");
         } else {
@@ -91,76 +62,52 @@ public class KursCLI implements CI {
         }
     }
 
-    private void kursNachIdLoeschen() {
-        System.out.println("Nach ID: ");
-        int id = Integer.parseInt(scanner.nextLine());
+    private void kursNachIDLoeschen() {
+        int id = readInt("Kurs-ID");
         kursService.loescheKurs(id);
         System.out.println("✅ Kurs gelöscht");
     }
 
     private void kursNachTitelLoeschen() {
-        System.out.println("Titel: ");
-        String titel = scanner.nextLine();
+        String titel = read("Titel");
         kursService.loescheKurseNachTitel(titel);
         System.out.println("✅ Kurse gelöscht");
     }
 
     private void beschreibungAendern() {
-        System.out.println("1) Nach ID:");
-        System.out.println("2) Nach Titel:");
-        System.out.println("> ");
-        int wahl = Integer.parseInt(scanner.nextLine());
+        System.out.println("1) Nach ID");
+        System.out.println("2) Nach Titel");
 
-        System.out.println("Neue Beschreibung: ");
-        String neu = scanner.nextLine();
+        String wahl = read("Auswahl");
+        String neu = read("Neue Beschreibung");
 
-        if(wahl == 1) {
-            System.out.println("Kurs-ID: ");
-            int id = Integer.parseInt(scanner.nextLine());
-            kursService.aendereBeschreibungNachId(id, neu);
-        } else if(wahl == 2) {
-            System.out.println("Titel: ");
-            String titel = scanner.nextLine();
-            kursService.aendereBeschreibungNachTitel(titel, neu);
+        if(wahl.equals("1")) {
+            kursService.aendereBeschreibungNachId(readInt("Kurs-ID"), neu);
+        } else if(wahl.equals("2")) {
+            kursService.aendereBeschreibungNachTitel(read("Titel"), neu);
         } else {
-            System.out.println("❌ Ungültige Auswahl!");
+            System.out.println("❌ Ungültige Auswahl");
         }
     }
 
     private void kursSuchen() {
-        System.out.println("1) Nach ID:");
-        System.out.println("2) Nach Titel:");
-        System.out.println("> ");
-        int wahl = Integer.parseInt(scanner.nextLine());
+        System.out.println("1) Nach ID");
+        System.out.println("2) Nach Titel");
 
-        if(wahl == 1) {
-            System.out.println("Kurs-ID: ");
-            int id = Integer.parseInt(scanner.nextLine());
-            /*kursService.findeKursNachId(id)
-                    .ifPresentOrElse(
-                            System.out::println,
-                            () -> System.out.println("❌ Kurs nicht gefunden!")
-                    );*/
-            Optional<Kurs> kursOpt = Optional.ofNullable(kursService.findeKursNachId(id));
+        String wahl = read("Auswahl");
 
-            if(kursOpt.isPresent()) {
-                System.out.println(kursOpt.get());
-            } else {
-                System.out.println("❌ Kurs nicht gefunden");
-            }
-        } else if(wahl == 2) {
-            System.out.println("Titel: ");
-            String titel = scanner.nextLine();
-            var kurse = kursService.findeKursNachTitel(titel);
-
-            if(kurse.isEmpty()) {
-                System.out.println("❌ Keine Kurse gefunden");
-            } else {
-                kurse.forEach(System.out::println);
-            }
+        if(wahl.equals("1")) {
+            int id = readInt("Kurs-ID");
+            Optional<Kurs> kurs = Optional.ofNullable(kursService.findeKursNachId(id));
+            kurs.ifPresentOrElse(
+                    System.out::println,
+                    () -> System.out.println("❌ Kurs nicht gefunden")
+            );
+        } else if(wahl.equals("2")) {
+            List<Kurs> kurse = kursService.findeKursNachTitel(read("Titel"));
+            kurse.forEach(System.out::println);
         } else {
-            System.out.println("❌ Ungültige Auswahl!");
+            System.out.println("❌ Ungültige Auswahl");
         }
     }
 }
-

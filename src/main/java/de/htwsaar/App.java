@@ -44,7 +44,7 @@ public class App {
         StudentCLI studentCli = new StudentCLI(studentService, scanner);
 
 
-        MainCLI mainCLI = new MainCLI(kursCli, studentCli, notenCli, scanner);
+        MainCLI mainCLI = new MainCLI(scanner, kursCli, studentCli, notenCli);
         mainCLI.starten();
 
     }
