@@ -123,4 +123,9 @@ public class DatenbankStudentRepository implements StudentRepository {
         return student;
     }
 
+    @Override
+    public void deleteAllStudents() {
+        dsl.deleteFrom(Tabelle.STUDENT).execute();
+    }
+
 }

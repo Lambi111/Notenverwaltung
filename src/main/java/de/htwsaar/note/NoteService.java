@@ -1,17 +1,30 @@
 package de.htwsaar.note;
 
+import de.htwsaar.kurs.KursRepository;
+import de.htwsaar.student.StudentRepository;
+
 import java.util.*;
 
 public class NoteService {
 
     private final NoteRepository noteRepository;
+    private final KursRepository kursRepository;
+    private final StudentRepository studentRepository;
 
-    public NoteService(NoteRepository noteRepository) {
+    public NoteService(NoteRepository noteRepository, KursRepository kursRepository, StudentRepository studentRepository) {
         this.noteRepository = noteRepository;
+        this.kursRepository = kursRepository;
+        this.studentRepository = studentRepository;
     }
 
     public void erstelleNote(int note, int kursId, int matrikelnummer) {
         Note neueNote = new Note(note, kursId, matrikelnummer);
+        if (kursRepository.findeKursNachId(kursId).isEmpty()) {
+            throw new IllegalArgumentException("Kurs mit Id " + kursId + " existiert nicht");
+        };
+        if (studentRepository.showStudentByMatrikelnummer(matrikelnummer).isEmpty()) {
+            throw new IllegalArgumentException("Student mit Matrikelnummer " + matrikelnummer + " existiert nicht");
+        };
         noteRepository.speichere(neueNote);
     }
 

@@ -1,5 +1,7 @@
 package de.htwsaar.Note;
 
+import de.htwsaar.datenbank.DatenbankKursRepository;
+import de.htwsaar.datenbank.DatenbankStudentRepository;
 import de.htwsaar.note.Note;
 
 import de.htwsaar.datenbank.DatenbankNoteRepository;
@@ -23,6 +25,8 @@ public class NoteServiceTest {
 
     private NoteService noteService;
     private DatenbankNoteRepository repo;
+    private DatenbankKursRepository kursRepo;
+    private DatenbankStudentRepository studentRepo;
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -32,7 +36,11 @@ public class NoteServiceTest {
         DSLContext dsl = DSL.using(conn, SQLDialect.SQLITE);
         repo = new DatenbankNoteRepository(dsl);
         repo.loescheAlleNoten();
-        noteService = new NoteService(repo);
+        kursRepo = new DatenbankKursRepository(dsl);
+        kursRepo.loescheAlleKurse();
+        studentRepo = new DatenbankStudentRepository(dsl);
+        studentRepo.deleteAllStudents();
+        noteService = new NoteService(repo, kursRepo, studentRepo);
     }
 
     @Test

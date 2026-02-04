@@ -66,4 +66,8 @@ public class StudentService {
         }
     }
 
+    public void deleteAllStudents() {
+        repository.deleteAllStudents();
+    }
+
 }
