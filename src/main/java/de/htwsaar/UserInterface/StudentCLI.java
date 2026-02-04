@@ -5,136 +5,85 @@ import de.htwsaar.student.StudentService;
 
 import java.util.*;
 
-public class StudentCLI implements CI {
-
+public class StudentCLI  extends AbstraktCLI{
     private final StudentService studentService;
-    private final Scanner scanner;
 
-    public StudentCLI(StudentService studentService, Scanner scanner) {
+    public  StudentCLI(StudentService studentService, Scanner scanner) {
+        super(scanner);
         this.studentService = studentService;
-        this.scanner = scanner;
     }
 
     @Override
     public void starten() {
-        while (true) {
-            System.out.println("-- Studentenservice --");
-            System.out.println("1) Neuen Studenten anlegen");
+        while(true) {
+            header("Studentenverwaltung");
+            System.out.println("1) Student anlegen");
             System.out.println("2) Alle Studenten anzeigen");
-            System.out.println("3) Studenten nach Matrikelnummer suchen");
-            System.out.println("4) Studenten nach Name suchen");
-            System.out.println("5) Studenten löschen nach Matrikelnummer");
-            System.out.println("6) Studenten löschen nach Vor-& Nachname");
-            System.out.println("7) Studiengang ändern nach Matrikelnummer");
-            System.out.println("0) Exit");
+            System.out.println("3) Suche Student nach Matrikelnummer");
+            System.out.println("4) Suche Student nach Vor- & Nachname");
+            System.out.println("5) Student nach Matrikelnummer löschen");
+            System.out.println("6) Student nach Vor- & Nachname löschen");
+            System.out.println("7) Studiengang ändern");
+            System.out.println("0) Zurück");
 
-            String input = scanner.nextLine();
-
-            try {
-                switch (input) {
-                    case "1" -> createStudent();
-                    case "2" -> showAllStudents();
-                    case "3" -> findStudentByMatrikelnummer();
-                    case "4" -> findStudentByName();
-                    case "5" -> deleteStudentByMatrikelnummer();
-                    case "6" -> deleteStudentByName();
-                    case "7" -> changeStudiengang();
-                    case "0" -> {
-                        return;
-                    }
-                    default -> System.out.println("❌ Ungültige Auswahl! " + input);
+            try{
+                switch(read("Auswahl")) {
+                    case "1" -> studentAnlegen();
+                    case "2" -> alleAnzeigen();
+                    case "3" -> sucheStudentNachMatrikelnummer();
+                    case "4" -> sucheStudentNachName();
+                    case "5" -> loescheStudentNachMatrikelnummer();
+                    case "6" -> loescheStudentNachName();
+                    case "7" -> aendereStudiengang();
+                    case "0" -> { return;}
+                    default -> System.out.println("❌ Ungültige Auswahl");
                 }
-                } catch (NumberFormatException e) {
-                    System.out.println("❌ Ungültige Zahleneingabe!");
-                } catch (IllegalArgumentException e) {
-                    System.out.println("❌ " + e.getMessage());
-                }
+            } catch(IllegalArgumentException e) {
+                System.out.println("❌ " + e.getMessage());
             }
         }
-
-    private void createStudent() {
-        System.out.println("Vorname: ");
-        String vorname = scanner.nextLine().trim();
-        System.out.println("Nachname: ");
-        String nachname = scanner.nextLine().trim();
-        System.out.println("Studiengang: ");
-        String studiengang = scanner.nextLine().trim();
-
-        try{
-            Student student = studentService.createStudent(vorname, nachname, studiengang);
-            System.out.println("✅ Student angelegt: " + student);
-        } catch(IllegalArgumentException e) {
-            System.out.println("❌ Fehler: " + e.getMessage());
-        }
     }
 
-    private void showAllStudents() {
-        List<Student> studenten = studentService.showAllStudents();
-        if(studenten.isEmpty()) {
-            System.out.println("Keine Studenten vorhanden.");
-        } else {
-            studenten.forEach(System.out::println);
-        }
+    private void studentAnlegen() {
+        Student s = studentService.createStudent(
+                read("Vorname"),
+                read("Nachname"),
+                read("Studiengang")
+        );
+        System.out.println("✅ Angelegt: " + s);
     }
 
-    private void findStudentByMatrikelnummer() {
-        System.out.println("Matrikelnummer: ");
-        int matrikelnummer = Integer.parseInt(scanner.nextLine().trim());
-        Optional<Student> student = studentService.showStudentByMatrikelnummer(matrikelnummer);
-        student.ifPresentOrElse(System.out::println, () -> System.out.println("Kein Student gefunden."));
+    private void alleAnzeigen() {
+        List<Student> students = studentService.showAllStudents();
+        students.forEach(System.out::println);
     }
 
-    private void findStudentByName() {
-        System.out.println("Vorname: ");
-        String vorname = scanner.nextLine().trim();
-        System.out.println("Nachname: ");
-        String nachname = scanner.nextLine().trim();
-
-        List<Student> studenten = studentService.showStudentByName(vorname, nachname);
-        if(studenten.isEmpty()) {
-            System.out.println("Kein Student gefunden.");
-        } else {
-            studenten.forEach(System.out::println);
-        }
+    private void sucheStudentNachMatrikelnummer() {
+        int nr = readInt("Matrikelnummer");
+        Optional<Student> student = studentService.showStudentByMatrikelnummer(nr);
+        student.ifPresentOrElse(
+                System.out::println,
+                () -> System.out.println("❌ Kein Student gefunden")
+        );
     }
 
-    private void deleteStudentByMatrikelnummer() {
-        System.out.println("Matrikelnummer: ");
-        int matrikelnummer = Integer.parseInt(scanner.nextLine().trim());
-
-        try{
-            studentService.deleteStudentByMatrikelnummer(matrikelnummer);
-            System.out.println("✅ Student gelöscht");
-        } catch(IllegalArgumentException e) {
-            System.out.println("❌ Fehler: " + e.getMessage());
-        }
+    private void sucheStudentNachName() {
+        List<Student> students = studentService.showStudentByName(read("Vorname"), read("Nachname"));
+        students.forEach(System.out::println);
     }
 
-    private void deleteStudentByName() {
-        System.out.println("Vorname: ");
-        String vorname = scanner.nextLine().trim();
-        System.out.println("Nachname: ");
-        String nachname = scanner.nextLine().trim();
-
-        try{
-            studentService.deleteStudentByName(vorname, nachname);
-            System.out.println("✅ Student(en) gelöscht.");
-        } catch(IllegalArgumentException e) {
-            System.out.println("❌ Fehler: " + e.getMessage());
-        }
+    private void loescheStudentNachMatrikelnummer() {
+        studentService.deleteStudentByMatrikelnummer(readInt("Matrikelnummer"));
+        System.out.println("✅ Student gelöscht");
     }
 
-    private void changeStudiengang() {
-        System.out.println("Matrikelnummer: ");
-        int matrikelnummer = Integer.parseInt(scanner.nextLine().trim());
-        System.out.println("Neuer Studiengang: ");
-        String neuerStudiengang = scanner.nextLine().trim();
+    private void loescheStudentNachName() {
+        studentService.deleteStudentByName(read("Vorname"), read("Nachname"));
+        System.out.println("✅ Student(en) gelöscht");
+    }
 
-        try{
-            studentService.changeStudiengang(matrikelnummer, neuerStudiengang);
-            System.out.println("✅ Studiengang geändert.");
-        } catch(IllegalArgumentException e) {
-            System.out.println("❌ Fehler: " + e.getMessage());
-        }
+    private void aendereStudiengang() {
+        studentService.changeStudiengang(readInt("Matrikelnummer"), read("Neuer Studiengang"));
+        System.out.println("✅ Studiengang geändert");
     }
 }
