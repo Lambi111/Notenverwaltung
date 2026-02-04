@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -97,7 +98,7 @@ public class NoteServiceTest {
         Note note = repo.zeigeAlleNoten().get(0);
 
         Optional<Note> gefunden = Optional.ofNullable(noteService.findeNoteNachId(note.getId()));
-
+        assertTrue(gefunden.isPresent());
         assertEquals(3, gefunden.get().getNote());
     }
 
@@ -138,8 +139,10 @@ public class NoteServiceTest {
         Note note = repo.zeigeAlleNoten().get(0);
 
         noteService.aendereNoteNachId(note.getId(), 1);
+        Optional<Note> opt = repo.findeNoteNachId(note.getId());
 
-        Note aktualisiert = repo.findeNoteNachId(note.getId()).get();
+        assertTrue(opt.isPresent());
+        Note aktualisiert = opt.get();
         assertEquals(1, aktualisiert.getNote());
     }
 
@@ -193,6 +196,53 @@ public class NoteServiceTest {
         );
 
         assertEquals("Keine Noten fuer KursId 99 gefunden", ex.getMessage());
+    }
+
+    @Test
+    void erstelleLeistungsberichtFuerStudent() {
+        noteService.erstelleNote(2, 10, 111);
+        noteService.erstelleNote(5, 20, 111);
+
+        List<String> bericht = noteService.erstelleLeistungsberichtStudent(111);
+
+        assertTrue(bericht.get(0).contains("Kurs-ID: 10"));
+        assertTrue(bericht.get(0).contains("Status: bestanden."));
+        assertTrue(bericht.get(1).contains("Kurs-ID: 20"));
+        assertTrue(bericht.get(1).contains("Status: nicht bestanden."));
+    }
+
+    @Test
+    void erstelleLeistungsberichtStudentKeineNoten() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> noteService.erstelleLeistungsberichtStudent(999)
+        );
+
+        assertEquals(
+                "Keine Noten für Matrikelnummer 999", ex.getMessage()
+        );
+    }
+
+    @Test
+    void erstelleLeistungsberichtKurs() {
+        noteService.erstelleNote(2, 10, 111);
+        noteService.erstelleNote(3, 10, 222);
+        noteService.erstelleNote(5, 10, 333);
+
+        Map<String, Integer> bericht = noteService.erstelleLeistungsberichtKurs(10);
+
+        assertEquals(2, bericht.get("bestanden"));
+        assertEquals(1, bericht.get("nicht bestanden"));
+    }
+
+    @Test
+    void erstelleLeistungsberichtKursKeineNoten() {
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> noteService.erstelleLeistungsberichtKurs(99)
+        );
+
+        assertEquals("Kein Kurs 99 gefunden", ex.getMessage());
     }
 
 }
