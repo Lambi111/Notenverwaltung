@@ -65,17 +65,6 @@ public class DatenbankStudentRepository implements StudentRepository {
                 .execute();
     }
 
-
-    @Override
-    public boolean existsByMatrikelnummer(int matrikelnummer) {
-        Field<Integer> matrikelnummerField = DSL.field(DSL.name("matrikelnummer"), Integer.class);
-
-        return dsl.fetchExists(
-                dsl.selectFrom(DSL.table(DSL.name("Student")))
-                        .where(matrikelnummerField.eq(matrikelnummer))
-        );
-    }
-
     @Override
     public List<Student> showAllStudents() {
         return dsl.selectFrom(STUDENT)

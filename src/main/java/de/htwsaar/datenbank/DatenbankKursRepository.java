@@ -30,17 +30,6 @@ public class DatenbankKursRepository implements KursRepository {
         this.dsl = dsl;
     }
 
-
-    @Override
-    public boolean existsById(int id) {
-        Field<Integer> kursIdField = DSL.field(DSL.name("kursID"), Integer.class);
-
-        return dsl.fetchExists(
-                dsl.selectFrom(DSL.table(DSL.name("Kurs")))
-                        .where(kursIdField.eq(id))
-        );
-    }
-
     @Override
     public void speichere(Kurs kurs) {
         if(kurs.getKursId() == 0) {
