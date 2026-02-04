@@ -7,17 +7,31 @@ import org.jooq.Record;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static de.htwsaar.datenbank.DatenbankStudentRepository.Tabelle.MATRIKELNUMMER;
+import static de.htwsaar.datenbank.DatenbankStudentRepository.Tabelle.STUDENT;
 
 public class DatenbankStudentRepository implements StudentRepository {
 
     public static class Tabelle {
-        public static final Table<Record> STUDENT = DSL.table("Student");
-        public static final Field<Integer> MATRIKELNUMMER = DSL.field("Matrikelnummer", SQLDataType.INTEGER);
-        public static final Field<String> VORNAME = DSL.field("Vorname", SQLDataType.VARCHAR);
-        public static final Field<String> NACHNAME = DSL.field("Nachname", SQLDataType.VARCHAR);
-        public static final Field<String> STUDIENGANG = DSL.field("Studiengang", SQLDataType.VARCHAR);
+        public static final Table<Record> STUDENT = DSL.table(DSL.name("Student"));
+
+        public static final Field<Integer> MATRIKELNUMMER =
+                STUDENT.field(DSL.name("Matrikelnummer"), Integer.class);
+
+        public static final Field<String> VORNAME =
+                STUDENT.field(DSL.name("Vorname"), String.class);
+
+        public static final Field<String> NACHNAME =
+                STUDENT.field(DSL.name("Nachname"), String.class);
+
+        public static final Field<String> STUDIENGANG =
+                STUDENT.field(DSL.name("Studiengang"), String.class);
     }
 
     private final DSLContext dsl;
@@ -33,7 +47,7 @@ public class DatenbankStudentRepository implements StudentRepository {
     public void saveStudent(Student student) {
         if (student.getMatrikelnummer() == 0) {
             Integer max = dsl.select(DSL.max(Tabelle.MATRIKELNUMMER))
-                    .from(Tabelle.STUDENT)
+                    .from(STUDENT)
                     .fetchOne(0, Integer.class);
 
             int neueNummer = freieMatrikelnummer.isEmpty()
@@ -43,7 +57,7 @@ public class DatenbankStudentRepository implements StudentRepository {
             student.setMatrikelnummer(neueNummer);
         }
 
-        dsl.insertInto(Tabelle.STUDENT)
+        dsl.insertInto(STUDENT)
                 .set(Tabelle.MATRIKELNUMMER, student.getMatrikelnummer())
                 .set(Tabelle.VORNAME, student.getVorname())
                 .set(Tabelle.NACHNAME, student.getNachname())
@@ -51,9 +65,20 @@ public class DatenbankStudentRepository implements StudentRepository {
                 .execute();
     }
 
+
+    @Override
+    public boolean existsByMatrikelnummer(int matrikelnummer) {
+        Field<Integer> matrikelnummerField = DSL.field(DSL.name("matrikelnummer"), Integer.class);
+
+        return dsl.fetchExists(
+                dsl.selectFrom(DSL.table(DSL.name("Student")))
+                        .where(matrikelnummerField.eq(matrikelnummer))
+        );
+    }
+
     @Override
     public List<Student> showAllStudents() {
-        return dsl.selectFrom(Tabelle.STUDENT)
+        return dsl.selectFrom(STUDENT)
                 .fetch()
                 .stream()
                 .map(this::recordZuStudent)
@@ -62,7 +87,7 @@ public class DatenbankStudentRepository implements StudentRepository {
 
     @Override
     public Optional<Student> showStudentByMatrikelnummer(int matrikelnummer) {
-        var record = dsl.selectFrom(Tabelle.STUDENT)
+        var record = dsl.selectFrom(STUDENT)
                 .where(Tabelle.MATRIKELNUMMER.eq(matrikelnummer))
                 .fetchOne();
 
@@ -72,7 +97,7 @@ public class DatenbankStudentRepository implements StudentRepository {
 
     @Override
     public List<Student> showStudentByName(String vorname, String nachname) {
-        return dsl.selectFrom(Tabelle.STUDENT)
+        return dsl.selectFrom(STUDENT)
                 .where(Tabelle.VORNAME.eq(vorname).and(Tabelle.NACHNAME.eq(nachname)))
                 .fetch()
                 .stream()
@@ -82,7 +107,7 @@ public class DatenbankStudentRepository implements StudentRepository {
 
     @Override
     public void deleteStudentByMatrikelnummer(int matrikelnummer) {
-        dsl.deleteFrom(Tabelle.STUDENT)
+        dsl.deleteFrom(STUDENT)
                 .where(Tabelle.MATRIKELNUMMER.eq(matrikelnummer))
                 .execute();
 
@@ -93,12 +118,12 @@ public class DatenbankStudentRepository implements StudentRepository {
     @Override
     public void deleteStudentByName(String vorname, String nachname) {
         List<Integer> numbers = dsl.select(Tabelle.MATRIKELNUMMER)
-                .from(Tabelle.STUDENT)
+                .from(STUDENT)
                 .where(Tabelle.VORNAME.eq(vorname).and(Tabelle.NACHNAME.eq(nachname))
                 )
                 .fetch(Tabelle.MATRIKELNUMMER);
 
-        dsl.deleteFrom(Tabelle.STUDENT)
+        dsl.deleteFrom(STUDENT)
                 .where(Tabelle.VORNAME.eq(vorname).and(Tabelle.NACHNAME.eq(nachname)))
                 .execute();
 
@@ -107,7 +132,7 @@ public class DatenbankStudentRepository implements StudentRepository {
 
     @Override
     public void changeStudiengang(int matrikelnummer, String neuerStudiengang) {
-        dsl.update(Tabelle.STUDENT)
+        dsl.update(STUDENT)
                 .set(Tabelle.STUDIENGANG, neuerStudiengang)
                 .where(Tabelle.MATRIKELNUMMER.eq(matrikelnummer))
                 .execute();

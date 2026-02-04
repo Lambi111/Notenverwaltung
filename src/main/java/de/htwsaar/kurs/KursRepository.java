@@ -23,4 +23,6 @@ public interface KursRepository {
 
     void aendereBeschreibungNachTitel(String titel, String neueBeschreibung);
 
+    boolean existsById(int id);
+
 }
