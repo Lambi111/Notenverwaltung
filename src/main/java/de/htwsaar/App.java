@@ -35,14 +35,13 @@ public class App {
         KursService kursService = new KursService(kursRepo);
         KursCLI kursCli = new KursCLI(kursService, scanner);
 
-        NoteRepository noteRepo = new DatenbankNoteRepository(dsl);
-        NoteService noteService = new NoteService(noteRepo);
-        NoteCLI notenCli = new NoteCLI(noteService, scanner);
-
         StudentRepository studentRepo = new DatenbankStudentRepository(dsl);
         StudentService studentService = new StudentService(studentRepo);
         StudentCLI studentCli = new StudentCLI(studentService, scanner);
 
+        NoteRepository noteRepo = new DatenbankNoteRepository(dsl);
+        NoteService noteService = new NoteService(noteRepo, kursRepo, studentRepo);
+        NoteCLI notenCli = new NoteCLI(noteService, scanner);
 
         MainCLI mainCLI = new MainCLI(scanner, kursCli, studentCli, notenCli);
         mainCLI.starten();

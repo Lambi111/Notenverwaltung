@@ -16,5 +16,7 @@ public interface StudentRepository {
     void deleteStudentByName(String vorname, String nachname);
 
     void changeStudiengang(int matrikelnummer, String neuerStudiengang);
+
+    boolean existsByMatrikelnummer(int matrNr);
 }
 

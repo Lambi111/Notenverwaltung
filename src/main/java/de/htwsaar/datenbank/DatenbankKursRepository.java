@@ -10,15 +10,17 @@ import org.jooq.impl.SQLDataType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.htwsaar.datenbank.DatenbankKursRepository.Tabelle.KURSID;
+
 
 public class DatenbankKursRepository implements KursRepository {
 
     public static class Tabelle {
-        public static final Table<Record> KURS = DSL.table("Kurs");
-        public static final Field<Integer> KURSID = DSL.field("kursID", SQLDataType.INTEGER);
-        public static final Field<String> TITEL = DSL.field("titel", SQLDataType.VARCHAR);
-        public static final Field<String> BESCHREIBUNG = DSL.field("beschreibung", SQLDataType.VARCHAR);
-        public static final Field<Integer> SEMESTER = DSL.field("semester", SQLDataType.INTEGER);
+        public static final Table<Record> KURS = DSL.table(DSL.name("Kurs"));
+        public static final Field<Integer> KURSID = DSL.field(DSL.name("Kurs", "kursID"), Integer.class);
+        public static final Field<String> TITEL = DSL.field(DSL.name("Kurs", "titel"), String.class);
+        public static final Field<String> BESCHREIBUNG = DSL.field(DSL.name("Kurs", "beschreibung"), String.class);
+        public static final Field<Integer> SEMESTER = DSL.field(DSL.name("Kurs", "semester"), Integer.class);
     }
 
     private final DSLContext dsl;
@@ -30,13 +32,23 @@ public class DatenbankKursRepository implements KursRepository {
 
 
     @Override
+    public boolean existsById(int id) {
+        Field<Integer> kursIdField = DSL.field(DSL.name("kursID"), Integer.class);
+
+        return dsl.fetchExists(
+                dsl.selectFrom(DSL.table(DSL.name("Kurs")))
+                        .where(kursIdField.eq(id))
+        );
+    }
+
+    @Override
     public void speichere(Kurs kurs) {
         if(kurs.getKursId() == 0) {
             int neueId;
             if(!freieIds.isEmpty()) {
                 neueId = freieIds.poll();
             } else {
-                Integer maxId = dsl.select(DSL.max(Tabelle.KURSID))
+                Integer maxId = dsl.select(DSL.max(KURSID))
                         .from(Tabelle.KURS)
                         .fetchOne(0, Integer.class);
                 neueId = (maxId == null) ? 1 : maxId + 1;
@@ -45,7 +57,7 @@ public class DatenbankKursRepository implements KursRepository {
         }
 
         dsl.insertInto(Tabelle.KURS)
-                .set(Tabelle.KURSID, kurs.getKursId())
+                .set(KURSID, kurs.getKursId())
                 .set(Tabelle.TITEL, kurs.getTitel())
                 .set(Tabelle.BESCHREIBUNG, kurs.getBeschreibung())
                 .set(Tabelle.SEMESTER, kurs.getSemester())
@@ -55,7 +67,7 @@ public class DatenbankKursRepository implements KursRepository {
 
     @Override
     public List<Kurs> zeigeAlleKurse() {
-        List<Record4<Integer,String, String, Integer>> records = dsl.select(Tabelle.KURSID,Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+        List<Record4<Integer,String, String, Integer>> records = dsl.select(KURSID,Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
                 .from(Tabelle.KURS)
                 .fetch();
 
@@ -66,7 +78,7 @@ public class DatenbankKursRepository implements KursRepository {
 
     public void loescheKursNachId(int kursId) {
         dsl.deleteFrom(Tabelle.KURS)
-                .where(Tabelle.KURSID.eq(kursId))
+                .where(KURSID.eq(kursId))
                 .execute();
         freieIds.add(kursId);
     }
@@ -80,9 +92,9 @@ public class DatenbankKursRepository implements KursRepository {
 
     @Override
     public Optional<Kurs> findeKursNachId(int kursId) {
-        Record4<Integer, String, String, Integer> record = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+        Record4<Integer, String, String, Integer> record = dsl.select(KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
                 .from(Tabelle.KURS)
-                .where(Tabelle.KURSID.eq(kursId))
+                .where(KURSID.eq(kursId))
                 .fetchOne();
 
         if(record == null) return Optional.empty();
@@ -91,7 +103,7 @@ public class DatenbankKursRepository implements KursRepository {
 
     @Override
     public List<Kurs> findeAlleKurseNachTitel(String titel) {
-        List<Record4<Integer, String, String, Integer>> records = dsl.select(Tabelle.KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
+        List<Record4<Integer, String, String, Integer>> records = dsl.select(KURSID, Tabelle.TITEL, Tabelle.BESCHREIBUNG, Tabelle.SEMESTER)
                 .from(Tabelle.KURS)
                 .where(Tabelle.TITEL.eq(titel))
                 .fetch();
@@ -104,7 +116,7 @@ public class DatenbankKursRepository implements KursRepository {
     // Hilfsmethode: Record -> Kurs
     private Kurs recordZuKurs(Record4<Integer, String, String, Integer> record) {
         Kurs kurs = new Kurs(record.get(Tabelle.TITEL),record.get(Tabelle.BESCHREIBUNG),record.get(Tabelle.SEMESTER));
-        kurs.setKursId(record.get(Tabelle.KURSID));
+        kurs.setKursId(record.get(KURSID));
         return kurs;
     }
 
@@ -116,7 +128,7 @@ public class DatenbankKursRepository implements KursRepository {
     public void aendereBeschreibungNachId(int kursId, String neueBeschreibung) {
         dsl.update(Tabelle.KURS)
                 .set(Tabelle.BESCHREIBUNG, neueBeschreibung)
-                .where(Tabelle.KURSID.eq(kursId))
+                .where(KURSID.eq(kursId))
                 .execute();
     }
 
